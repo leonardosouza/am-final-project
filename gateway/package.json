@@ -1,0 +1,18 @@
+{
+  "name": "gateway",
+  "version": "1.0.0",
+  "description": "Gateway IOT - AM",
+  "main": "index.js",
+  "scripts": {
+    "start": "pm2 start index.js -i max --name 'gateway' --watch --node-args='--debug=7001'",
+    "stop": "pm2 kill"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "serialport": "^4.0.1"
+  },
+  "devDependencies": {
+    "json-server": "^0.8.18"
+  }
+}
