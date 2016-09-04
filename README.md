@@ -3,7 +3,7 @@
 # Gateway
 
 ```
-cd gateway && node app.js
+cd gateway && npm start
 ```
 
 # Notifycar-Api
