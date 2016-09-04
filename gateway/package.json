@@ -4,7 +4,7 @@
   "description": "Gateway IOT - AM",
   "main": "index.js",
   "scripts": {
-    "start": "pm2 start index.js -i max --name 'gateway' --watch --node-args='--debug=7001'",
+    "start": "pm2 start app.js -i max --name 'gateway' --watch --node-args='--debug=7001'",
     "stop": "pm2 kill"
   },
   "author": "",
