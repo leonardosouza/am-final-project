@@ -1,3 +1,16 @@
+var app = require('express')();
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+var command = '';
+
+server.listen(8080);
+
+io.on('connection', function (socket) {
+  socket.on('command', function (data) {
+    sendData(data);
+  });
+});
+
 var SerialPort = require("serialport");
 
 var port = new SerialPort("/dev/cu.usbmodem1411", {
@@ -11,8 +24,8 @@ var genericError = function(err) {
   }
 };
 
-var sendData = function() {
-  port.write('L', genericError);
+var sendData = function(command) {
+  port.write(command, genericError);
 };
 
 var getData = function(data) {
@@ -20,7 +33,7 @@ var getData = function(data) {
 };
 
 port
-  .on('open', sendData)
+  // .on('open', sendData)
   .on('error', genericError)
   .on('data', getData);
 

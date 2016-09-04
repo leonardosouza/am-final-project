@@ -8,6 +8,7 @@ var routes = require('./routes/index');
 var usuarios = require('./routes/usuarios');
 var veiculos = require('./routes/veiculos');
 var controladores = require('./routes/controladores');
+var gateway = require('./routes/gateway');
 
 var mongoose = require('mongoose');
 
@@ -36,6 +37,7 @@ app.use('/', routes);
 app.use('/usuarios', usuarios);
 app.use('/veiculos', veiculos);
 app.use('/controladores', controladores);
+app.use('/gateway', gateway);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
