@@ -5,23 +5,23 @@ var port = new SerialPort("/dev/cu.usbmodem1411", {
   parser: SerialPort.parsers.readline('\n')
 });
 
-var openingPort = function() {
-  port.write('main screen turn on', function(err) {
-    if (err) {
-      return console.log('Error on write: ', err.message);
-    }
-  });
+var genericError = function(err) {
+  if(err && err.message) {
+    console.log('Error: ', err.message);
+  }
 };
 
-var errorOpeningPort = function(err) {
-  console.log('Error: ', err.message);
+var sendData = function() {
+  port.write('L', genericError);
 };
 
-var processData = function(data) {
+var getData = function(data) {
   console.log(data);
 };
 
 port
-  .on('open', openingPort)
-  .on('error', errorOpeningPort)
-  .on('data', processData);
+  .on('open', sendData)
+  .on('error', genericError)
+  .on('data', getData);
+
+// console.log('==>', process.argv.slice(2));
