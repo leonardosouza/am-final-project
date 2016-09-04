@@ -1,8 +1,5 @@
 # am-final-project
 
-Startup da aplicação
-
-
 # Gateway
 
 ```
