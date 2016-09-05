@@ -36,33 +36,38 @@ void loop() {
 
     if(incomingByte == 76) {
       // SEND L(OKED)
-      Serial.println("LOCK CAR");
-      digitalWrite(ledPinArmed, HIGH);
-      root["sensorArmed"] = true;
-      root["currentLatitude"] = "-23.566999";
-      root["currentLongitude"] = "-46.6338";
+      if(!root["sensorArmed"]) {
+        Serial.println("LOCK CAR");
+        digitalWrite(ledPinArmed, HIGH);
+        root["sensorArmed"] = true;
+        root["currentLatitude"] = "-23.566999";
+        root["currentLongitude"] = "-46.6338";
+      }
     } else if(incomingByte == 85) {
-      // SEND U(NLOCKED)
-      Serial.println("UNLOCK CAR");
-      digitalWrite(ledPinArmed, LOW);
-      digitalWrite(ledPinDisarmed, HIGH);
-      root["triggeredAlarm"] = true;
+      if(root["sensorArmed"]) {
+        // SEND U(NLOCKED)
+        Serial.println("UNLOCK CAR");
+        digitalWrite(ledPinArmed, LOW);
+        digitalWrite(ledPinDisarmed, HIGH);
+        root["triggeredAlarm"] = true;
+      }
     } else if(incomingByte == 82) {
       // SEND R(ESET)
-      
-      tone(buzzerAlarm, 3000);
-      delay(500);
-      tone(buzzerAlarm, 4000);
-      delay(500);
-      tone(buzzerAlarm, 3000);
-      delay(500);
-      noTone(buzzerAlarm);
-      digitalWrite(ledPinDisarmed, LOW);
-      digitalWrite(ledPinArmed, LOW);
-      root["triggeredAlarm"] = false;
-      root["sensorArmed"] = true;
-      root["currentLatitude"] = "";
-      root["currentLongitude"] = "";
+      if(root["sensorArmed"] && root["triggeredAlarm"]) {
+        tone(buzzerAlarm, 3000);
+        delay(500);
+        tone(buzzerAlarm, 4000);
+        delay(500);
+        tone(buzzerAlarm, 3000);
+        delay(500);
+        noTone(buzzerAlarm);
+        digitalWrite(ledPinDisarmed, LOW);
+        digitalWrite(ledPinArmed, HIGH);
+        root["triggeredAlarm"] = false;
+        root["sensorArmed"] = true;
+        root["currentLatitude"] = "";
+        root["currentLongitude"] = "";
+      }
     }
   
     // say what you got:
