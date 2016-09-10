@@ -10,12 +10,31 @@ var veiculos = require('./routes/veiculos');
 var controladores = require('./routes/controladores');
 var gateway = require('./routes/gateway');
 
+var mongo = process.env.VCAP_SERVICES;
+var port = process.env.PORT || 3030;
+var conn_str = "";
+if (mongo) {
+  var env = JSON.parse(mongo);
+  if (env['mongodb']) {
+    mongo = env['mongodb'][0]['credentials'];
+    if (mongo.url) {
+      conn_str = mongo.url;
+    } else {
+      console.log("No mongo found");
+    }  
+  } else {
+    conn_str = 'mongodb://localhost/notifycar-api';
+  }
+} else {
+  conn_str = 'mongodb://localhost/notifycar-api';
+}
+
 var mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 
-mongoose.connect('mongodb://localhost/notifycar-api')
-  .then(() =>  console.log('mongo connection succesful'))
+mongoose.connect(conn_str)
+  .then(() =>  console.log('mongoDb connection successful'))
   .catch((err) => console.error(err));
 
 var app = express();
