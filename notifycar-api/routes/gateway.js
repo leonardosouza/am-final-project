@@ -18,6 +18,10 @@ socket.on('connect_error', function(socket) {
     console.log('Socket :(', socket);
 });
 
+socket.on('tunnel', function(data) {
+  console.log('Tunnel is', data);
+});
+
 
 
 /* GET /gateway/lock */
