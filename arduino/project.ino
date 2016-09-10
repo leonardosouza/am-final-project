@@ -47,11 +47,11 @@ void unlockCar() {
 
 void offBuzzer() {
   tone(buzzerAlarm, 3000);
-  delay(500);
+  delay(200);
   tone(buzzerAlarm, 4000);
-  delay(500);
+  delay(200);
   tone(buzzerAlarm, 3000);
-  delay(500);
+  delay(200);
   noTone(buzzerAlarm);
 }
 
@@ -82,9 +82,7 @@ void loop() {
       }
     } else if(incomingByte == 82) {
       // SEND R(ESET)
-      if(root["sensorArmed"] && root["triggeredAlarm"]) {
-        resetAlarm();
-      }
+      resetAlarm();
     }
   
     // say what you got:
