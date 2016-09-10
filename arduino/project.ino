@@ -29,6 +29,42 @@ void setup() {
   root["currentLongitude"] = "";
 }
 
+void lockCar() {
+  Serial.println("LOCK CAR");
+  digitalWrite(ledPinArmed, HIGH);
+  digitalWrite(ledPinDisarmed, LOW);
+  root["sensorArmed"] = true;
+  root["currentLatitude"] = "-23.566999";
+  root["currentLongitude"] = "-46.6338";
+}
+
+void unlockCar() {
+  Serial.println("UNLOCK CAR");
+  digitalWrite(ledPinArmed, LOW);
+  digitalWrite(ledPinDisarmed, HIGH);
+  root["triggeredAlarm"] = true;
+}
+
+void offBuzzer() {
+  tone(buzzerAlarm, 3000);
+  delay(500);
+  tone(buzzerAlarm, 4000);
+  delay(500);
+  tone(buzzerAlarm, 3000);
+  delay(500);
+  noTone(buzzerAlarm);
+}
+
+void resetAlarm() {
+  offBuzzer();
+  digitalWrite(ledPinArmed, LOW);
+  digitalWrite(ledPinDisarmed, LOW);
+  root["sensorArmed"] = false;
+  root["currentLatitude"] = "";
+  root["currentLongitude"] = "";
+  root["triggeredAlarm"] = false;
+}
+
 void loop() { 
   if (Serial.available() > 0) {
     // read the incoming byte:
@@ -37,36 +73,17 @@ void loop() {
     if(incomingByte == 76) {
       // SEND L(OKED)
       if(!root["sensorArmed"]) {
-        Serial.println("LOCK CAR");
-        digitalWrite(ledPinArmed, HIGH);
-        root["sensorArmed"] = true;
-        root["currentLatitude"] = "-23.566999";
-        root["currentLongitude"] = "-46.6338";
+        lockCar();
       }
     } else if(incomingByte == 85) {
+      // SEND U(NLOCKED)
       if(root["sensorArmed"]) {
-        // SEND U(NLOCKED)
-        Serial.println("UNLOCK CAR");
-        digitalWrite(ledPinArmed, LOW);
-        digitalWrite(ledPinDisarmed, HIGH);
-        root["triggeredAlarm"] = true;
+        unlockCar();
       }
     } else if(incomingByte == 82) {
       // SEND R(ESET)
       if(root["sensorArmed"] && root["triggeredAlarm"]) {
-        tone(buzzerAlarm, 3000);
-        delay(500);
-        tone(buzzerAlarm, 4000);
-        delay(500);
-        tone(buzzerAlarm, 3000);
-        delay(500);
-        noTone(buzzerAlarm);
-        digitalWrite(ledPinDisarmed, LOW);
-        digitalWrite(ledPinArmed, HIGH);
-        root["triggeredAlarm"] = false;
-        root["sensorArmed"] = true;
-        root["currentLatitude"] = "";
-        root["currentLongitude"] = "";
+        resetAlarm();
       }
     }
   
@@ -77,33 +94,19 @@ void loop() {
    
   stateArmed = digitalRead(buttonArmed);
   if(stateArmed == HIGH) {
-    digitalWrite(ledPinArmed, HIGH);
-    root["sensorArmed"] = true;
-    root["currentLatitude"] = "-23.566999";
-    root["currentLongitude"] = "-46.6338";
+    lockCar();
   }
 
   stateDisarmed = digitalRead(buttonDisarmed);
   if(stateDisarmed == HIGH && root["sensorArmed"]) {
-    digitalWrite(ledPinArmed, LOW);
-    digitalWrite(ledPinDisarmed, HIGH);
-    root["triggeredAlarm"] = true;
+    unlockCar();
   }
 
   if(root["sensorArmed"] && root["triggeredAlarm"]) {
     tone(buzzerAlarm, 2000);
 
     if(stateArmed == HIGH) {
-      tone(buzzerAlarm, 3000);
-      delay(500);
-      tone(buzzerAlarm, 4000);
-      delay(500);
-      tone(buzzerAlarm, 3000);
-      delay(500);
-      noTone(buzzerAlarm);
-      digitalWrite(ledPinDisarmed, LOW);
-      root["triggeredAlarm"] = false;
-      root["sensorArmed"] = true;
+      resetAlarm();
     }
   }
 
