@@ -15,7 +15,7 @@ var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 mongoose.connect('mongodb://localhost/notifycar-api')
-  .then(() =>  console.log('connection succesful'))
+  .then(() =>  console.log('mongo connection succesful'))
   .catch((err) => console.error(err));
 
 var app = express();

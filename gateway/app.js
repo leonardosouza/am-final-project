@@ -1,11 +1,26 @@
-var app = require('express')();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
-var command = '';
+var https = require('https');
+var fs = require('fs');
 
-server.listen(8080);
+var options = {
+    key: fs.readFileSync('../certificates/server.key'),
+    cert: fs.readFileSync('../certificates/server.crt'),
+    requestCert: false,
+    rejectUnauthorized: false
+};
+
+var app = require('express')();
+var server = require('https').Server(options, app);
+server.listen(8888, function() {
+    console.log("server started at port 8888");  
+});
+
+
+var io = require('socket.io')(server);
 
 io.on('connection', function (socket) {
+  console.log('Client connected.', socket);
+  console.log('-----');
+  
   socket.on('command', function (data) {
     sendData(data);
   });
