@@ -11,16 +11,45 @@ io.on('connection', function (socket) {
   });
 });
 
-var SerialPort = require("serialport");
+var SerialPort = require('serialport');
+var port;
 
-var port = new SerialPort("/dev/cu.usbmodem1411", {
-  baudRate: 57600,
-  parser: SerialPort.parsers.readline('\n')
+SerialPort.list(function (err, ports) {
+  var discoveredPort = [];
+  
+  ports.forEach(function(port) {
+    discoveredPort = port.comName.match(/.+(cu.usbmodem).+/);
+  });
+
+  openConnection(discoveredPort[0]);
 });
+
+var openConnection = function(discoveredPort) {
+  if(discoveredPort) {
+    console.log('OPENING', discoveredPort);
+    port = new SerialPort(discoveredPort, {
+      baudRate: 57600,
+      parser: SerialPort.parsers.readline('\n')
+    });
+
+    port
+      .on('error', genericError)
+      .on('data', getData);
+  } else {
+    console.log('FAILED');
+  }
+};
+
+var closeConnection = function() {
+  if(port) {
+    console.log('CLOSING', discoveredPort[0]);
+    port.close();
+  }
+};
 
 var genericError = function(err) {
   if(err && err.message) {
-    console.log('Error: ', err.message);
+    console.log(err.message);
   }
 };
 
@@ -31,10 +60,3 @@ var sendData = function(command) {
 var getData = function(data) {
   console.log(data);
 };
-
-port
-  // .on('open', sendData)
-  .on('error', genericError)
-  .on('data', getData);
-
-// console.log('==>', process.argv.slice(2));
