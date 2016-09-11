@@ -27,6 +27,14 @@ router.get('/:id', function(req, res, next) {
   });
 });
 
+/* GET /localizacao/veiculo/:id */
+router.get('/veiculo/:id', function(req, res, next) {
+  Localizacao.find({ 'veiculoId': req.params.id } , function (err, post) {
+    if (err) return next(err);
+    res.json(post);
+  });
+});
+
 /* PUT /localizacao/:id */
 router.put('/:id', function(req, res, next) {
   Localizacao.findByIdAndUpdate(req.params.id, req.body, function (err, post) {

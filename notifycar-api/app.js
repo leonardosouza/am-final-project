@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var dispositivo = require('./routes/dispositivo');
-var estacionamento = require('./routes/estacionamento');
+// var estacionamento = require('./routes/estacionamento');
 var fabricante = require('./routes/fabricante');
 var localizacao = require('./routes/localizacao');
 var modelo = require('./routes/modelo');
@@ -38,7 +38,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/dispositivo', dispositivo);
-app.use('/estacionamento', estacionamento);
+// app.use('/estacionamento', estacionamento);
 app.use('/fabricante', fabricante);
 app.use('/localizacao', localizacao);
 app.use('/modelo', modelo);
