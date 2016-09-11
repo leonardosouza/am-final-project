@@ -5,9 +5,9 @@ var Dispositivo = require('../models/Dispositivo.js');
 
 /* GET /dispositivo */
 router.get('/', function(req, res, next) {
-  Dispositivo.find(function (err, dispositivos) {
+  Dispositivo.find(function (err, post) {
     if (err) return next(err);
-    res.json(dispositivos);
+    res.json(post);
   });
 });
 
@@ -19,6 +19,28 @@ router.post('/', function(req, res, next) {
   });
 });
 
+/* GET /dispositivo/:id */
+router.get('/:id', function(req, res, next) {
+  Dispositivo.findById(req.params.id, function (err, post) {
+    if (err) return next(err);
+    res.json(post);
+  });
+});
 
+/* PUT /dispositivo/:id */
+router.put('/:id', function(req, res, next) {
+  Dispositivo.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
+    if (err) return next(err);
+    res.json(post);
+  });
+});
+
+/* DELETE /dispositivo/:id */
+router.delete('/:id', function(req, res, next) {
+  Dispositivo.findByIdAndRemove(req.params.id, req.body, function (err, post) {
+    if (err) return next(err);
+    res.json(post);
+  });
+});
 
 module.exports = router;

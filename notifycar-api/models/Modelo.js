@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 var ModeloSchema = new mongoose.Schema({
-  descricao: String,
+  nome: String,
   motor: String,
   fabricanteId: String,
   atualizadoEm: { type: Date, default: Date.now },
