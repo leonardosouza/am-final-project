@@ -1,19 +1,19 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-var Controlador = require('../models/Controlador.js');
+var Localizacao = require('../models/Localizacao.js');
 
-/* GET /controladores */
+/* GET /localizacao */
 router.get('/', function(req, res, next) {
-  Controlador.find(function (err, controladores) {
+  Localizacao.find(function (err, localizacaos) {
     if (err) return next(err);
-    res.json(controladores);
+    res.json(localizacaos);
   });
 });
 
-/* POST /controladores */
+/* POST /localizacao */
 router.post('/', function(req, res, next) {
-  Controlador.create(req.body, function (err, post) {
+  Localizacao.create(req.body, function (err, post) {
     if (err) return next(err);
     res.json(post);
   });

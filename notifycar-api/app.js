@@ -5,40 +5,24 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var routes = require('./routes/index');
-var usuarios = require('./routes/usuarios');
-var veiculos = require('./routes/veiculos');
-var controladores = require('./routes/controladores');
-var gateway = require('./routes/gateway');
-
-var mongo = process.env.VCAP_SERVICES;
-var port = process.env.PORT || 3030;
-var conn_str = "";
-if (mongo) {
-  var env = JSON.parse(mongo);
-  if (env['mongodb']) {
-    mongo = env['mongodb'][0]['credentials'];
-    if (mongo.url) {
-      conn_str = mongo.url;
-    } else {
-      console.log("No mongo found");
-    }  
-  } else {
-    conn_str = 'mongodb://localhost/notifycar-api';
-  }
-} else {
-  conn_str = 'mongodb://localhost/notifycar-api';
-}
-
+var dispositivo = require('./routes/dispositivo');
+var estacionamento = require('./routes/estacionamento');
+var fabricante = require('./routes/fabricante');
+var localizacao = require('./routes/localizacao');
+var modelo = require('./routes/modelo');
+var usuario = require('./routes/usuario');
+var veiculo = require('./routes/veiculo');
+var mongoDbConnStr = require('./config/mongodb');
 var mongoose = require('mongoose');
 
+// starting mongoose
 mongoose.Promise = global.Promise;
-
-mongoose.connect(conn_str)
-  .then(() =>  console.log('mongoDb connection successful'))
+mongoose.connect(mongoDbConnStr)
+  .then(() =>  console.log('connection with mongoDb is successful'))
   .catch((err) => console.error(err));
 
+// start app
 var app = express();
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -53,10 +37,14 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/usuarios', usuarios);
-app.use('/veiculos', veiculos);
-app.use('/controladores', controladores);
-app.use('/gateway', gateway);
+app.use('/dispositivo', dispositivo);
+app.use('/estacionamento', estacionamento);
+app.use('/fabricante', fabricante);
+app.use('/localizacao', localizacao);
+app.use('/modelo', modelo);
+app.use('/usuario', usuario);
+app.use('/veiculo', veiculo);
+// app.use('/gateway', gateway);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

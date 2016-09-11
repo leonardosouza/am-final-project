@@ -1,19 +1,19 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-var Veiculo = require('../models/Veiculo.js');
+var Modelo = require('../models/Modelo.js');
 
-/* GET /veiculos */
+/* GET /modelo */
 router.get('/', function(req, res, next) {
-  Veiculo.find(function (err, veiculos) {
+  Modelo.find(function (err, modelos) {
     if (err) return next(err);
-    res.json(veiculos);
+    res.json(modelos);
   });
 });
 
-/* POST /veiculos */
+/* POST /modelo */
 router.post('/', function(req, res, next) {
-  Veiculo.create(req.body, function (err, post) {
+  Modelo.create(req.body, function (err, post) {
     if (err) return next(err);
     res.json(post);
   });

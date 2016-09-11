@@ -1,19 +1,19 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-var Usuario = require('../models/Usuario.js');
+var Estacionamento = require('../models/Estacionamento.js');
 
-/* GET /usuarios */
+/* GET /estacionamento */
 router.get('/', function(req, res, next) {
-  Usuario.find(function (err, usuarios) {
+  Estacionamento.find(function (err, estacionamentos) {
     if (err) return next(err);
-    res.json(usuarios);
+    res.json(estacionamentos);
   });
 });
 
-/* POST /usuarios */
+/* POST /estacionamento */
 router.post('/', function(req, res, next) {
-  Usuario.create(req.body, function (err, post) {
+  Estacionamento.create(req.body, function (err, post) {
     if (err) return next(err);
     res.json(post);
   });

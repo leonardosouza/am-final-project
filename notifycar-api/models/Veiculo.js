@@ -1,9 +1,10 @@
 var mongoose = require('mongoose');
 
 var VeiculoSchema = new mongoose.Schema({
-  modelo: String,
   cor: String,
   ano: Number,
+  placa: String,
+  modeloId: String,
   usuarioId: String,
   atualizadoEm: { type: Date, default: Date.now },
 });
