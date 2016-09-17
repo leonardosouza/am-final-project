@@ -6,12 +6,12 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var dispositivo = require('./routes/dispositivo');
-// var estacionamento = require('./routes/estacionamento');
 var fabricante = require('./routes/fabricante');
 var localizacao = require('./routes/localizacao');
 var modelo = require('./routes/modelo');
 var usuario = require('./routes/usuario');
 var veiculo = require('./routes/veiculo');
+var gateway = require('./routes/gateway');
 var mongoDbConnStr = require('./config/mongodb');
 var mongoose = require('mongoose');
 
@@ -38,13 +38,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/dispositivo', dispositivo);
-// app.use('/estacionamento', estacionamento);
 app.use('/fabricante', fabricante);
 app.use('/localizacao', localizacao);
 app.use('/modelo', modelo);
 app.use('/usuario', usuario);
 app.use('/veiculo', veiculo);
-// app.use('/gateway', gateway);
+app.use('/gateway', gateway);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

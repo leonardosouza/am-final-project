@@ -24,20 +24,23 @@ proxy.listen(PROXY_PORT, function() {
   console.log("proxy started at port " + PROXY_PORT);  
 });
 
-/** Proxy Routes **/
-app.get('/lock', function(req, res) {
-  serial.sendData('L');
-  res.send('Locked');
-});
+// /** Proxy Routes **/
+// app.get('/lock', function(req, res) {
+//   serial.sendData('L');
+//   res.send('Locked');
+// });
 
-app.get('/unlock', function(req, res) {
-  serial.sendData('U');
-  res.send('Unlocked');
-});
+// app.get('/unlock', function(req, res) {
+//   serial.sendData('U');
+//   res.send('Unlocked');
+// });
 
-app.get('/reset', function(req, res) {
-  serial.sendData('R');
-  res.send('Reset');
-});
+// app.get('/reset', function(req, res) {
+//   serial.sendData('R');
+//   res.send('Reset');
+// });
 
-module.exports = server;
+module.exports = {
+  app: app,
+  server: server
+};

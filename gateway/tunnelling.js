@@ -1,18 +1,19 @@
 var localtunnel = require('localtunnel');
+var Deferred = require("promised-io/promise").Deferred;
 var PROXY_PORT = 8887;
 
 /** Tunnelling */
-var tunnel = localtunnel(PROXY_PORT, function(err, tunnel) {
+var getTunnel = function() {
+  var deferred = new Deferred();
+  var tunnel = localtunnel(PROXY_PORT, function(err, tunnel) {
     if (err) {
-      console.log('tunnel :(');
+      deferred.reject(err);
     } else {
-      console.log(tunnel.url);
+      deferred.resolve(tunnel.url);
     }
-});
+  });
 
-tunnel.on('close', function() {
-  // tunnels are closed
-  console.log('tunnel closed');
-});
+  return deferred.promise;
+}
 
-module.exports = tunnel;
+module.exports = getTunnel;

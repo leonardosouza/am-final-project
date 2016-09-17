@@ -1,54 +1,35 @@
 /** Serial Communication **/
 var SerialPort = require('serialport');
+var Deferred = require("promised-io/promise").Deferred;
 var port;
 
-SerialPort.list(function (err, ports) {
-  var discoveredPort = [];
-  
-  ports.forEach(function(port) {
-    discoveredPort = port.comName.match(/.+(cu.usbmodem).+/);
-  });
+var openConnection = function() {
+  var deferred = new Deferred();
 
-  openConnection(discoveredPort[0]);
-});
-
-var openConnection = function(discoveredPort) {
-  if(discoveredPort) {
-    console.log('OPENING', discoveredPort);
-    port = new SerialPort(discoveredPort, {
-      baudRate: 57600,
-      parser: SerialPort.parsers.readline('\n')
+  SerialPort.list(function (err, ports) {
+    var discoveredPort = [];
+    
+    ports.forEach(function(port) {
+      discoveredPort = port.comName.match(/.+(cu.usbmodem).+/);
     });
 
-    port
-      .on('error', genericError)
-      .on('data', getData);
-  } else {
-    console.log('FAILED');
-  }
+    if(discoveredPort) {
+      console.log('OPENING', discoveredPort[0]);
+      port = new SerialPort(discoveredPort[0], {
+        baudRate: 57600,
+        parser: SerialPort.parsers.readline('\n')
+      });
+      deferred.resolve(port);
+    } else {
+      deferred.reject('FAILED OPENING SERIAL CONNECTION');
+    }
+  });
+
+  return deferred.promise;
 };
 
-var closeConnection = function() {
-  if(port) {
-    console.log('CLOSING', discoveredPort[0]);
-    port.close();
-  }
-};
+// var sendData = function(command) {
+//   port.write(command, genericError);
+// };
 
-var genericError = function(err) {
-  if(err && err.message) {
-    console.log(err.message);
-  }
-};
-
-var sendData = function(command) {
-  port.write(command, genericError);
-};
-
-var getData = function(data) {
-  console.log(data);
-};
-
-module.exports = {
-  sendData: sendData
-};
+module.exports = openConnection;
