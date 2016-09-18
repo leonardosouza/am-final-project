@@ -1,4 +1,6 @@
 var env = require('dotenv').config();
+var path = require('path');
+var express = require('express');
 var requestify = require('requestify');
 var lodash = require('lodash');
 var webserver = require('./webservers');
@@ -10,6 +12,11 @@ var apiPath = process.env.API_PATH;
 var serialPort;
 var deviceId;
 var tunnelName;
+
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+app.use(express.static('public'));
+app.use(express.static('node_modules'));
 
 console.log(process.env.API);
 
@@ -83,33 +90,21 @@ tunnel()
 
 
 /** Proxy Routes **/
-app.get('/lock', function(req, res) {
+app.get('/', function(req, res) {
+  res.render('index', { deviceId: deviceId, teste: 'Leonardo' });
+});
+
+app.post('/lock', function(req, res) {
   sendSerialData('L');
   res.json({ deviceId: deviceId, carBlocked: true, carStatus: 'locked' });
 });
 
-app.get('/unlock', function(req, res) {
+app.post('/unlock', function(req, res) {
   sendSerialData('U');
   res.json({ deviceId: deviceId, carBlocked: false, carStatus: 'unlocked' });
 });
 
-app.get('/reset', function(req, res) {
+app.post('/reset', function(req, res) {
   sendSerialData('R');
   res.json({ deviceId: deviceId, carBlocked: false, carStatus: 'reset' }); 
 });
-
-
-// /** Websocket Listenning **/
-// var io = require('socket.io')(server);
-// io.on('connection', function (socket) {
-//   console.log('Client connected.');
-//   socket.emit('tunnel', { name: tunnelName });
-
-//   socket.on('whichTunnel', function() {
-//     socket.emit('tunnel', { name: tunnelName });
-//   });
-
-//   socket.on('command', function (data) {
-//     sendSerialData(data);
-//   });
-// });
