@@ -11,6 +11,14 @@ router.get('/', function(req, res, next) {
   });
 });
 
+/* GET /dispositivo/:deviceId */
+router.get('/:deviceId', function(req, res, next) {
+  Dispositivo.find({ 'deviceId': req.params.deviceId }, function (err, post) {
+    if (err) return next(err);
+    res.json(post);
+  });
+});
+
 /* POST /dispositivo */
 router.post('/', function(req, res, next) {
   Dispositivo.create(req.body, function (err, post) {

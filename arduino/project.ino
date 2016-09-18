@@ -13,7 +13,7 @@ const int sensorPir = 7;
 int stateSensor;
 int stateArmed = 0;
 int stateDisarmed = 0;
-StaticJsonBuffer<200> jsonBuffer;
+StaticJsonBuffer<1000> jsonBuffer;
 JsonObject& root = jsonBuffer.createObject();
 
 void setup() {
@@ -128,5 +128,5 @@ void loop() {
 
   root.printTo(Serial);
   Serial.println();
-  delay(1000);
+  delay(5000);
 }

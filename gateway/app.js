@@ -2,7 +2,7 @@ var env = require('dotenv').config();
 var path = require('path');
 var express = require('express');
 var requestify = require('requestify');
-var lodash = require('lodash');
+var _ = require('lodash');
 var webserver = require('./webservers');
 var serial = require('./serial-comm');
 var tunnel = require('./tunnelling');
@@ -17,8 +17,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(express.static('node_modules'));
-
-console.log(process.env.API);
 
 var genericError = function(err) {
   if(err && err.message) {
@@ -45,7 +43,7 @@ var openSerial = function(port) {
     console.log(rawData)
     var parsedData = parseRawData(rawData);
     if(parsedData && parsedData.carBlocked && parsedData.triggeredAlarm) {
-      console.log('ALARME DISPARADO! LOG LOG LOG');
+      discoverAndLog(parsedData.deviceId, parsedData);
     }
   };
 
@@ -83,6 +81,28 @@ var openTunnel = function(url) {
       clearInterval(timeout);
     }
   }, 1000);
+};
+
+var discoverAndLog = function(device, deviceData) {
+  requestify
+    .get(apiPath + '/dispositivo/' + device)
+    .then(function(response) {
+      logCurrentLocation(_.head(response.getBody()), deviceData);
+    });
+};
+
+var logCurrentLocation = function(vehicleData, deviceData) {
+  requestify
+    .post(apiPath + '/localizacao', {
+      latitude: deviceData.latlong[0],
+      longitude: deviceData.latlong[1],
+      bloqueado: deviceData.carBlocked,
+      alarmeDisparado: deviceData.triggeredAlarm,
+      veiculoId: vehicleData.veiculoId
+    })
+    .then(function(response) {
+      console.log(response.getBody());
+    });  
 };
 
 tunnel()

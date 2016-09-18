@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 var DispositivoSchema = new mongoose.Schema({
-  guid: String,
+  deviceId: String,
   veiculoId: String,
   atualizadoEm: { type: Date, default: Date.now },
 });
