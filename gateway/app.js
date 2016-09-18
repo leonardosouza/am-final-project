@@ -1,3 +1,4 @@
+var env = require('dotenv').config();
 var requestify = require('requestify');
 var lodash = require('lodash');
 var webserver = require('./webservers');
@@ -5,9 +6,12 @@ var serial = require('./serial-comm');
 var tunnel = require('./tunnelling');
 var app = webserver.app;
 var server = webserver.server;
+var apiPath = process.env.API_PATH;
 var serialPort;
 var deviceId;
 var tunnelName;
+
+console.log(process.env.API);
 
 var genericError = function(err) {
   if(err && err.message) {
@@ -26,13 +30,28 @@ var getSerialData = function(callback, data) {
 };
 
 var openSerial = function(port) {
-  var processData = function(data) {
-    deviceId = JSON.parse(data).deviceId;
+  var processData = function(rawData) {
+    deviceId = parseRawData().deviceId;
+  };
+
+  var processMonitor = function(rawData) {
+    console.log(rawData)
+    var parsedData = parseRawData(rawData);
+    if(parsedData && parsedData.carBlocked && parsedData.triggeredAlarm) {
+      console.log('ALARME DISPARADO! LOG LOG LOG');
+    }
+  };
+
+  var parseRawData = function(rawData) {
+    try {
+      return JSON.parse(rawData);
+    } catch(e) {}
+    return {};
   };
 
   port
     .on('error', genericError)
-    .on('data', console.log)
+    .on('data', processMonitor)
     .on('data', getSerialData.bind(this, processData));
 
   serialPort = port;
@@ -44,16 +63,14 @@ var openTunnel = function(url) {
   serial().then(openSerial, genericError.bind(this, new Error('FAIL ON OPEN SERIAL PORT')));
 
   var timeout = setInterval(function() {
-    console.log('timeout?', deviceId);
     if(deviceId !== null) {
-      
-      requestify.post('http://localhost:4000/gateway/register', {
+    
+      requestify.post(apiPath + '/gateway/register', {
         deviceId: deviceId,
         remoteControl: url
       })
       .then(function(response) {
-        // Get the response body
-        response.getBody();
+        console.log(response.getBody());
       });
 
       clearInterval(timeout);
@@ -68,17 +85,17 @@ tunnel()
 /** Proxy Routes **/
 app.get('/lock', function(req, res) {
   sendSerialData('L');
-  res.send('Locked');
+  res.json({ deviceId: deviceId, carBlocked: true, carStatus: 'locked' });
 });
 
 app.get('/unlock', function(req, res) {
   sendSerialData('U');
-  res.send('Unlocked');
+  res.json({ deviceId: deviceId, carBlocked: false, carStatus: 'unlocked' });
 });
 
 app.get('/reset', function(req, res) {
   sendSerialData('R');
-  res.send('Reset');
+  res.json({ deviceId: deviceId, carBlocked: false, carStatus: 'reset' }); 
 });
 
 

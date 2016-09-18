@@ -1,6 +1,5 @@
-#include <TinyGPS++.h>
-
 #include <ArduinoJson.h>
+#include <stdlib.h>
 
 const int ledPinArmed = 12;
 const int ledPinDisarmed = 13;
@@ -30,22 +29,38 @@ void setup() {
   root["sensorPir"] = stateSensor;
   root["carBlocked"] = false;
   root["triggeredAlarm"] = false;
-  root["currentLatitude"] = "";
-  root["currentLongitude"] = "";
+  disableLatLong(); 
 }
 
 void lockCar() {
   digitalWrite(ledPinArmed, HIGH);
   digitalWrite(ledPinDisarmed, LOW);
   root["carBlocked"] = true;
-  root["currentLatitude"] = "send lat";
-  root["currentLongitude"] = "send long";
+  getRandomLatLong();
+  //root["dateTime"] = Datetime.now();
 }
 
 void unlockCar() {
   digitalWrite(ledPinArmed, LOW);
   digitalWrite(ledPinDisarmed, HIGH);
   root["triggeredAlarm"] = true;
+}
+
+void getRandomLatLong() {
+  int quantity = 5;
+  double latitude[] = {-23.561991, -23.566724, -23.574201, -23.573426, -23.576948};
+  double longitude[] = {-46.587174, -46.621592, -46.623517, -46.623809, -46.623031};
+  int r = rand() % quantity;
+
+  JsonArray& latlong = root.createNestedArray("latlong");
+  latlong.add(latitude[r], 6);
+  latlong.add(longitude[r], 6);
+}
+
+void disableLatLong() {
+  JsonArray& latlong = root.createNestedArray("latlong");
+  latlong.add(0.0, 6);
+  latlong.add(0.0, 6);
 }
 
 void offBuzzer() {
@@ -63,9 +78,8 @@ void resetAlarm() {
   digitalWrite(ledPinArmed, LOW);
   digitalWrite(ledPinDisarmed, LOW);
   root["carBlocked"] = false;
-  root["currentLatitude"] = "";
-  root["currentLongitude"] = "";
   root["triggeredAlarm"] = false;
+  disableLatLong();
 }
 
 void loop() { 
