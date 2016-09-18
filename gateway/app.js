@@ -7,6 +7,7 @@ var app = webserver.app;
 var server = webserver.server;
 var serialPort;
 var deviceId;
+var tunnelName;
 
 var genericError = function(err) {
   if(err && err.message) {
@@ -39,6 +40,7 @@ var openSerial = function(port) {
 
 
 var openTunnel = function(url) {
+  tunnelName = url;
   serial().then(openSerial, genericError.bind(this, new Error('FAIL ON OPEN SERIAL PORT')));
 
   var timeout = setInterval(function() {
@@ -80,17 +82,17 @@ app.get('/reset', function(req, res) {
 });
 
 
-/** Websocket Listenning **/
+// /** Websocket Listenning **/
 // var io = require('socket.io')(server);
 // io.on('connection', function (socket) {
 //   console.log('Client connected.');
-//   socket.emit('tunnel', { name: tunnel.url });
+//   socket.emit('tunnel', { name: tunnelName });
 
 //   socket.on('whichTunnel', function() {
-//     socket.emit('tunnel', { name: tunnel.url });
+//     socket.emit('tunnel', { name: tunnelName });
 //   });
 
 //   socket.on('command', function (data) {
-//     serial.sendData(data);
+//     sendSerialData(data);
 //   });
 // });
