@@ -40,10 +40,19 @@ router.put('/register/:id', function(req, res, next) {
 
 /* DELETE /gateway/register/:id */
 router.delete('/register/:id', function(req, res, next) {
-  Fabricante.findByIdAndRemove(req.params.id, req.body, function (err, post) {
+  Gateway.findByIdAndRemove(req.params.id, req.body, function (err, post) {
     if (err) return next(err);
     res.json(post);
   });
+});
+
+/* DELETE /gateway/register/deivce/:id */
+router.delete('/register/device/:id', function(req, res, next) {
+  Gateway
+    .findByIdAndRemove({ 'deviceId': req.params.id }, req.body, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
 });
 
 module.exports = router;

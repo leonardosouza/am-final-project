@@ -68,8 +68,7 @@ var openTunnel = function(url) {
   serial().then(openSerial, genericError.bind(this, new Error('FAIL ON OPEN SERIAL PORT')));
 
   var timeout = setInterval(function() {
-    if(deviceId !== null) {
-    
+    if(deviceId) {
       requestify.post(apiPath + '/gateway/register', {
         deviceId: deviceId,
         remoteControl: url
@@ -79,6 +78,8 @@ var openTunnel = function(url) {
       });
 
       clearInterval(timeout);
+    } else {
+      console.log('Device not detected! Connect your device and try again!');
     }
   }, 1000);
 };
