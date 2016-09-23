@@ -4,8 +4,10 @@
   "description": "Gateway IOT - AM",
   "main": "index.js",
   "scripts": {
-    "start": "pm2 start app.js -i max --name 'gateway' --watch --node-args='--debug=7001'",
-    "stop": "pm2 kill"
+    "start": "node app",
+    "debug": "DEBUG=* node app",
+    "start-pm2": "pm2 start app.js -i max --name 'gateway' --watch --node-args='--debug=7001'",
+    "stop-pm2": "pm2 kill"
   },
   "author": "",
   "license": "ISC",

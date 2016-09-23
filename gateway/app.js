@@ -36,7 +36,7 @@ var getSerialData = function(callback, data) {
 
 var openSerial = function(port) {
   var processData = function(rawData) {
-    deviceId = parseRawData().deviceId;
+    deviceId = parseRawData(rawData).deviceId;
   };
 
   var processMonitor = function(rawData) {
@@ -68,18 +68,19 @@ var openTunnel = function(url) {
   serial().then(openSerial, genericError.bind(this, new Error('FAIL ON OPEN SERIAL PORT')));
 
   var timeout = setInterval(function() {
+    console.log('LOCALTUNNEL ==>', url);
     if(deviceId) {
       requestify.post(apiPath + '/gateway/register', {
         deviceId: deviceId,
         remoteControl: url
       })
       .then(function(response) {
-        console.log(response.getBody());
+        console.log('BLUEMIX API ==>', response.getBody());
       });
 
       clearInterval(timeout);
     } else {
-      console.log('Device not detected! Connect your device and try again!');
+      console.log('GETTING DEVICE ID...');
     }
   }, 1000);
 };
@@ -103,11 +104,10 @@ var logCurrentLocation = function(vehicleData, deviceData) {
     })
     .then(function(response) {
       console.log(response.getBody());
-    });  
+    });
 };
 
-tunnel()
-  .then(openTunnel, genericError.bind(this, new Error('FAIL ON OPEN TUNNEL')));
+tunnel().then(openTunnel, genericError.bind(this, new Error('FAIL ON OPEN TUNNEL')));
 
 
 /** Proxy Routes **/
@@ -127,5 +127,5 @@ app.post('/unlock', function(req, res) {
 
 app.post('/reset', function(req, res) {
   sendSerialData('R');
-  res.json({ deviceId: deviceId, carBlocked: false, carStatus: 'reset' }); 
+  res.json({ deviceId: deviceId, carBlocked: false, carStatus: 'reset' });
 });

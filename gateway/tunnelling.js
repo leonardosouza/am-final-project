@@ -13,6 +13,10 @@ var getTunnel = function() {
     }
   });
 
+  tunnel.on('close', function() {
+    console.log('CONNECTION LOST!');
+  });
+
   return deferred.promise;
 }
 
