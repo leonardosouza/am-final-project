@@ -3,11 +3,15 @@
 # Gateway
 
 ```
-cd gateway && npm start
+cd gateway && npm install && npm start
 ```
 
-# Notifycar-Api
+# Notifycar API
 
 ```
-cd notifycar-api && PORT=4000 npm start
+cd notifycar-api && npm install && npm start
 ```
+
+# Documentação da API (Postman)
+
+http://bit.ly/2ddXFNC
