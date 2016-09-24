@@ -128,5 +128,5 @@ void loop() {
 
   root.printTo(Serial);
   Serial.println();
-  delay(5000);
+  delay(3000);
 }
