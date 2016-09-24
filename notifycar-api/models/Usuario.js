@@ -12,8 +12,10 @@ var UsuarioSchema = new mongoose.Schema({
       message: '{VALUE} não é um email válido!'
     },
     unique: true 
-  }, 
+  },
   senha: { type: String, required: [ true, 'Informe uma senha!' ]  },
+  telefone: String,
+  deviceToken: String,
   atualizadoEm: { type: Date, default: Date.now },
 });
 
