@@ -112,15 +112,23 @@ var logCurrentLocation = function(vehicleData, deviceData) {
 
 var sendSmsMessage = function(device, deviceData) {
   if(!smsSended) {
-    smsSended = smsSender('+5511982292789', 'Atenção Sr Leonardo Souza! Está ocorrendo alguma atividade suspeita em seu veículo!');
-    console.log('1 ==> sms sended?', smsSended);
+    requestify
+      .get(apiPath + '/dispositivo/all/' + device)
+      .then(function(response) {
+        var allData = response.getBody();
+        var strMsg = 'Atenção Sr(a) %nome%! Detectamos que uma atividade suspeita está ocorrendo neste exato momento com o seu veículo de placas %placa%.';
+        var strTel = allData.usuario.telefone;
+        var strRpl = ['$1', allData.usuario.nome, '$3', allData.veiculo.placa].join('');
+        strMsg = strMsg.replace(/(.+)(%nome%)(.+)(%placa%)/gmi, strRpl);
+        smsSended = smsSender(strTel, strMsg);
+        console.log('1 ==> sms sended!', smsSended);
+      });
   } else {
-    console.log('2 ==> sms sended?', smsSended);
+    console.log('2 ==> sms not sended!', smsSended);
   }
 };
 
 tunnel().then(openTunnel, genericError.bind(this, new Error('FAIL ON OPEN TUNNEL')));
-
 
 /** Proxy Routes **/
 app.get('/', function(req, res) {

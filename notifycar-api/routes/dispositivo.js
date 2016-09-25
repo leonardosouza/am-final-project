@@ -36,7 +36,7 @@ router.get('/all/:deviceId', function(req, res, next) {
 
   var getUser = function(idUsuario) {
     return Promise.props({
-      usuario: Usuario.find({ _id: idUsuario }, 'nome email telefone deviceId atualizadoEm').execAsync()
+      usuario: Usuario.find({ _id: idUsuario }, 'nome email telefone deviceToken atualizadoEm').execAsync()
     })
     .then(function(r) {
       allData = _.assign(allData, { usuario: r.usuario[0] });
