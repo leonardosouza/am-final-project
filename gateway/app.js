@@ -14,6 +14,7 @@ var deviceId;
 var tunnelName;
 var smsSender = require('./sms-sender');
 var smsSended = false;
+var findData = false;
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -111,7 +112,9 @@ var logCurrentLocation = function(vehicleData, deviceData) {
 };
 
 var sendSmsMessage = function(device, deviceData) {
-  if(!smsSended) {
+  if(!(smsSended && findData)) {
+    findData = true;
+
     requestify
       .get(apiPath + '/dispositivo/all/' + device)
       .then(function(response) {
@@ -121,10 +124,10 @@ var sendSmsMessage = function(device, deviceData) {
         var strRpl = ['$1', allData.usuario.nome, '$3', allData.veiculo.placa].join('');
         strMsg = strMsg.replace(/(.+)(%nome%)(.+)(%placa%)/gmi, strRpl);
         smsSended = smsSender(strTel, strMsg);
-        console.log('1 ==> sms sended!', smsSended);
+        console.log('SMS SENT SUCCESSFULY!');
       });
   } else {
-    console.log('2 ==> sms not sended!', smsSended);
+    console.log('SMS NOT SENT!');
   }
 };
 
@@ -147,6 +150,7 @@ app.post('/unlock', function(req, res) {
 
 app.post('/reset', function(req, res) {
   smsSended = false;
+  findData = false;
   sendSerialData('R');
   res.json({ deviceId: deviceId, carBlocked: false, carStatus: 'reset' });
 });
