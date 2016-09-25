@@ -12,6 +12,7 @@ var apiPath = process.env.API_PATH;
 var serialPort;
 var deviceId;
 var tunnelName;
+var smsSender = require('./sms-sender');
 var smsSended = false;
 
 app.set('views', path.join(__dirname, 'views'));
@@ -45,6 +46,7 @@ var openSerial = function(port) {
     var parsedData = parseRawData(rawData);
     if(parsedData && parsedData.carBlocked && parsedData.triggeredAlarm) {
       discoverAndLog(parsedData.deviceId, parsedData);
+      sendSmsMessage(parsedData.deviceId, parsedData);
     }
   };
 
@@ -108,6 +110,15 @@ var logCurrentLocation = function(vehicleData, deviceData) {
     });
 };
 
+var sendSmsMessage = function(device, deviceData) {
+  if(!smsSended) {
+    smsSended = smsSender('+5511982292789', 'Atenção Sr Leonardo Souza! Está ocorrendo alguma atividade suspeita em seu veículo!');
+    console.log('1 ==> sms sended?', smsSended);
+  } else {
+    console.log('2 ==> sms sended?', smsSended);
+  }
+};
+
 tunnel().then(openTunnel, genericError.bind(this, new Error('FAIL ON OPEN TUNNEL')));
 
 
@@ -127,6 +138,7 @@ app.post('/unlock', function(req, res) {
 });
 
 app.post('/reset', function(req, res) {
+  smsSended = false;
   sendSerialData('R');
   res.json({ deviceId: deviceId, carBlocked: false, carStatus: 'reset' });
 });
