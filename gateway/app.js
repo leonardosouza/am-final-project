@@ -12,6 +12,7 @@ var apiPath = process.env.API_PATH;
 var serialPort;
 var deviceId;
 var tunnelName;
+var smsSended = false;
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -40,7 +41,7 @@ var openSerial = function(port) {
   };
 
   var processMonitor = function(rawData) {
-    console.log(rawData)
+    console.log(rawData);
     var parsedData = parseRawData(rawData);
     if(parsedData && parsedData.carBlocked && parsedData.triggeredAlarm) {
       discoverAndLog(parsedData.deviceId, parsedData);
