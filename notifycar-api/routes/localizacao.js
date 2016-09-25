@@ -7,6 +7,7 @@ var Localizacao = require('../models/Localizacao.js');
 router.get('/', function(req, res, next) {
   Localizacao.find(function (err, post) {
     if (err) return res.json(err);
+    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json(post);
   });
 });
@@ -15,6 +16,7 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, next) {
   Localizacao.create(req.body, function (err, post) {
     if (err) return res.json(err);
+    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json(post);
   });
 });
@@ -23,6 +25,7 @@ router.post('/', function(req, res, next) {
 router.get('/:id', function(req, res, next) {
   Localizacao.findById(req.params.id, function (err, post) {
     if (err) return res.json(err);
+    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json(post);
   });
 });
@@ -31,22 +34,25 @@ router.get('/:id', function(req, res, next) {
 router.get('/veiculo/:id', function(req, res, next) {
   Localizacao.find({ 'veiculoId': req.params.id } , function (err, post) {
     if (err) return res.json(err);
+    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json(post);
   });
 });
 
 /* PUT /localizacao/:id */
-router.put('/:id', function(req, res, next) {
+router.put('/:id?', function(req, res, next) {
   Localizacao.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
     if (err) return res.json(err);
+    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json(post);
   });
 });
 
 /* DELETE /localizacao/:id */
-router.delete('/:id', function(req, res, next) {
+router.delete('/:id?', function(req, res, next) {
   Localizacao.findByIdAndRemove(req.params.id, req.body, function (err, post) {
     if (err) return res.json(err);
+    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json(post);
   });
 });

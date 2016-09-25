@@ -60,6 +60,7 @@ router.get('/all/:deviceId', function(req, res, next) {
 router.get('/', function(req, res, next) {
   Dispositivo.find(function (err, post) {
     if (err) return res.json(err);
+    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json(post);
   });
 });
@@ -68,6 +69,7 @@ router.get('/', function(req, res, next) {
 router.get('/:deviceId', function(req, res, next) {
   Dispositivo.find({ 'deviceId': req.params.deviceId }, function (err, post) {
     if (err) return res.json(err);
+    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json(post);
   });
 });
@@ -76,6 +78,7 @@ router.get('/:deviceId', function(req, res, next) {
 router.post('/', function(req, res, next) {
   Dispositivo.create(req.body, function (err, post) {
     if (err) return res.json(err);
+    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json(post);
   });
 });
@@ -84,22 +87,25 @@ router.post('/', function(req, res, next) {
 router.get('/:id', function(req, res, next) {
   Dispositivo.findById(req.params.id, function (err, post) {
     if (err) return res.json(err);
+    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json(post);
   });
 });
 
 /* PUT /dispositivo/:id */
-router.put('/:id', function(req, res, next) {
+router.put('/:id?', function(req, res, next) {
   Dispositivo.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
     if (err) return res.json(err);
+    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json(post);
   });
 });
 
 /* DELETE /dispositivo/:id */
-router.delete('/:id', function(req, res, next) {
+router.delete('/:id?', function(req, res, next) {
   Dispositivo.findByIdAndRemove(req.params.id, req.body, function (err, post) {
     if (err) return res.json(err);
+    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json(post);
   });
 });
