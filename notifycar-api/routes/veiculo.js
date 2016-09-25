@@ -6,7 +6,7 @@ var Veiculo = require('../models/Veiculo.js');
 /* GET /veiculo */
 router.get('/', function(req, res, next) {
   Veiculo.find(function (err, post) {
-    if (err) return next(err);
+    if (err) return res.json(err);
     res.json(post);
   });
 });
@@ -14,7 +14,7 @@ router.get('/', function(req, res, next) {
 /* POST /veiculo */
 router.post('/', function(req, res, next) {
   Veiculo.create(req.body, function (err, post) {
-    if (err) return next(err);
+    if (err) return res.json(err);
     res.json(post);
   });
 });
@@ -22,7 +22,7 @@ router.post('/', function(req, res, next) {
 /* GET /veiculo/:id */
 router.get('/:id', function(req, res, next) {
   Veiculo.findById(req.params.id, function (err, post) {
-    if (err) return next(err);
+    if (err) return res.json(err);
     res.json(post);
   });
 });
@@ -30,7 +30,7 @@ router.get('/:id', function(req, res, next) {
 /* PUT /veiculo/:id */
 router.put('/:id', function(req, res, next) {
   Veiculo.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
-    if (err) return next(err);
+    if (err) return res.json(err);
     res.json(post);
   });
 });
@@ -38,7 +38,7 @@ router.put('/:id', function(req, res, next) {
 /* DELETE /veiculo/:id */
 router.delete('/:id', function(req, res, next) {
   Veiculo.findByIdAndRemove(req.params.id, req.body, function (err, post) {
-    if (err) return next(err);
+    if (err) return res.json(err);
     res.json(post);
   });
 });

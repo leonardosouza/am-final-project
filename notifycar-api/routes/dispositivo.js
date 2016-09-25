@@ -59,7 +59,7 @@ router.get('/all/:deviceId', function(req, res, next) {
 /* GET /dispositivo */
 router.get('/', function(req, res, next) {
   Dispositivo.find(function (err, post) {
-    if (err) return next(err);
+    if (err) return res.json(err);
     res.json(post);
   });
 });
@@ -67,7 +67,7 @@ router.get('/', function(req, res, next) {
 /* GET /dispositivo/:deviceId */
 router.get('/:deviceId', function(req, res, next) {
   Dispositivo.find({ 'deviceId': req.params.deviceId }, function (err, post) {
-    if (err) return next(err);
+    if (err) return res.json(err);
     res.json(post);
   });
 });
@@ -75,7 +75,7 @@ router.get('/:deviceId', function(req, res, next) {
 /* POST /dispositivo */
 router.post('/', function(req, res, next) {
   Dispositivo.create(req.body, function (err, post) {
-    if (err) return next(err);
+    if (err) return res.json(err);
     res.json(post);
   });
 });
@@ -83,7 +83,7 @@ router.post('/', function(req, res, next) {
 /* GET /dispositivo/:id */
 router.get('/:id', function(req, res, next) {
   Dispositivo.findById(req.params.id, function (err, post) {
-    if (err) return next(err);
+    if (err) return res.json(err);
     res.json(post);
   });
 });
@@ -91,7 +91,7 @@ router.get('/:id', function(req, res, next) {
 /* PUT /dispositivo/:id */
 router.put('/:id', function(req, res, next) {
   Dispositivo.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
-    if (err) return next(err);
+    if (err) return res.json(err);
     res.json(post);
   });
 });
@@ -99,7 +99,7 @@ router.put('/:id', function(req, res, next) {
 /* DELETE /dispositivo/:id */
 router.delete('/:id', function(req, res, next) {
   Dispositivo.findByIdAndRemove(req.params.id, req.body, function (err, post) {
-    if (err) return next(err);
+    if (err) return res.json(err);
     res.json(post);
   });
 });

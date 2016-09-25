@@ -7,7 +7,7 @@ var Gateway = require('../models/Gateway.js');
 /* POST /gateway/register */
 router.post('/register', function(req, res, next) {
   Gateway.create(req.body, function (err, post) {
-    if (err) return next(err);
+    if (err) return res.json(err);
     res.json(post);
   });
 });
@@ -15,7 +15,7 @@ router.post('/register', function(req, res, next) {
 /* GET /gateway/register/:id */
 router.get('/register/', function(req, res, next) {
   Gateway.find(function (err, post) {
-    if (err) return next(err);
+    if (err) return res.json(err);
     res.json(post);
   });
 });
@@ -23,7 +23,7 @@ router.get('/register/', function(req, res, next) {
 router.get('/register/:id/:limit?', function(req, res, next) {
   Gateway
     .find({ 'deviceId': req.params.id }, function (err, post) {
-      if (err) return next(err);
+      if (err) return res.json(err);
       res.json(post);
     })
     .limit(req.params.limit || 1)
@@ -33,7 +33,7 @@ router.get('/register/:id/:limit?', function(req, res, next) {
 /* PUT /gateway/register/:id */
 router.put('/register/:id', function(req, res, next) {
   Gateway.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
-    if (err) return next(err);
+    if (err) return res.json(err);
     res.json(post);
   });
 });
@@ -41,7 +41,7 @@ router.put('/register/:id', function(req, res, next) {
 /* DELETE /gateway/register/:id */
 router.delete('/register/:id', function(req, res, next) {
   Gateway.findByIdAndRemove(req.params.id, req.body, function (err, post) {
-    if (err) return next(err);
+    if (err) return res.json(err);
     res.json(post);
   });
 });
@@ -50,7 +50,7 @@ router.delete('/register/:id', function(req, res, next) {
 router.delete('/register/device/:id', function(req, res, next) {
   Gateway
     .findByIdAndRemove({ 'deviceId': req.params.id }, req.body, function (err, post) {
-      if (err) return next(err);
+      if (err) return res.json(err);
       res.json(post);
     });
 });
