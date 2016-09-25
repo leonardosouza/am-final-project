@@ -12,6 +12,9 @@ var apiPath = process.env.API_PATH;
 var serialPort;
 var deviceId;
 var tunnelName;
+var smsSender = require('./sms-sender');
+var smsSended = false;
+var findData = false;
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -40,10 +43,11 @@ var openSerial = function(port) {
   };
 
   var processMonitor = function(rawData) {
-    console.log(rawData)
+    console.log(rawData);
     var parsedData = parseRawData(rawData);
     if(parsedData && parsedData.carBlocked && parsedData.triggeredAlarm) {
       discoverAndLog(parsedData.deviceId, parsedData);
+      sendSmsMessage(parsedData.deviceId, parsedData);
     }
   };
 
@@ -107,8 +111,27 @@ var logCurrentLocation = function(vehicleData, deviceData) {
     });
 };
 
-tunnel().then(openTunnel, genericError.bind(this, new Error('FAIL ON OPEN TUNNEL')));
+var sendSmsMessage = function(device, deviceData) {
+  if(!(smsSended && findData)) {
+    findData = true;
 
+    requestify
+      .get(apiPath + '/dispositivo/all/' + device)
+      .then(function(response) {
+        var allData = response.getBody();
+        var strMsg = 'Atenção Sr(a) %nome%! Detectamos que uma atividade suspeita está ocorrendo neste exato momento com o seu veículo de placas %placa%.';
+        var strTel = allData.usuario.telefone;
+        var strRpl = ['$1', allData.usuario.nome, '$3', allData.veiculo.placa].join('');
+        strMsg = strMsg.replace(/(.+)(%nome%)(.+)(%placa%)/gmi, strRpl);
+        smsSended = smsSender(strTel, strMsg);
+        console.log('SMS SENT SUCCESSFULY!');
+      });
+  } else {
+    console.log('SMS NOT SENT!');
+  }
+};
+
+tunnel().then(openTunnel, genericError.bind(this, new Error('FAIL ON OPEN TUNNEL')));
 
 /** Proxy Routes **/
 app.get('/', function(req, res) {
@@ -126,6 +149,8 @@ app.post('/unlock', function(req, res) {
 });
 
 app.post('/reset', function(req, res) {
+  smsSended = false;
+  findData = false;
   sendSerialData('R');
   res.json({ deviceId: deviceId, carBlocked: false, carStatus: 'reset' });
 });

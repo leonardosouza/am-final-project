@@ -25,7 +25,7 @@ void setup() {
   pinMode(buttonDisarmed, INPUT);
   pinMode(sensorPir, INPUT);
   
-  root["deviceId"] = "aee5a6";
+  root["deviceId"] = "494101363422774";
   root["sensorPir"] = stateSensor;
   root["carBlocked"] = false;
   root["triggeredAlarm"] = false;
@@ -128,5 +128,5 @@ void loop() {
 
   root.printTo(Serial);
   Serial.println();
-  delay(3000);
+  delay(2000);
 }
