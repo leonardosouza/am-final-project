@@ -7,6 +7,7 @@ var Usuario = require('../models/Usuario.js');
 router.get('/', function(req, res, next) {
   Usuario.find(function (err, post) {
     if (err) return res.json(err);
+    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json(post);
   });
 });
@@ -15,6 +16,7 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, next) {
   Usuario.create(req.body, function (err, post) {
     if (err) return res.json(err);
+    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json(post);
   });
 });
@@ -23,22 +25,25 @@ router.post('/', function(req, res, next) {
 router.get('/:id', function(req, res, next) {
   Usuario.findById(req.params.id, function (err, post) {
     if (err) return res.json(err);
+    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json(post);
   });
 });
 
 /* PUT /usuario/:id */
-router.put('/:id', function(req, res, next) {
+router.put('/:id?', function(req, res, next) {
   Usuario.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
     if (err) return res.json(err);
+    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json(post);
   });
 });
 
 /* DELETE /usuario/:id */
-router.delete('/:id', function(req, res, next) {
+router.delete('/:id?', function(req, res, next) {
   Usuario.findByIdAndRemove(req.params.id, req.body, function (err, post) {
     if (err) return res.json(err);
+    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json(post);
   });
 });
