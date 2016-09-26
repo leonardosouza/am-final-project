@@ -10,6 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "fcm-push": "^1.1.0",
-    "request": "^2.75.0"
+    "firebase": "^3.4.0"
   }
 }
