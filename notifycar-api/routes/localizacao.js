@@ -6,7 +6,8 @@ var Localizacao = require('../models/Localizacao.js');
 /* GET /localizacao */
 router.get('/', function(req, res, next) {
   Localizacao.find(function (err, post) {
-    if (err) return next(err);
+    if (err) return res.json(err);
+    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json(post);
   });
 });
@@ -14,7 +15,8 @@ router.get('/', function(req, res, next) {
 /* POST /localizacao */
 router.post('/', function(req, res, next) {
   Localizacao.create(req.body, function (err, post) {
-    if (err) return next(err);
+    if (err) return res.json(err);
+    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json(post);
   });
 });
@@ -22,31 +24,42 @@ router.post('/', function(req, res, next) {
 /* GET /localizacao/:id */
 router.get('/:id', function(req, res, next) {
   Localizacao.findById(req.params.id, function (err, post) {
-    if (err) return next(err);
+    if (err) return res.json(err);
+    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json(post);
   });
 });
 
 /* GET /localizacao/veiculo/:id */
-router.get('/veiculo/:id', function(req, res, next) {
-  Localizacao.find({ 'veiculoId': req.params.id } , function (err, post) {
-    if (err) return next(err);
-    res.json(post);
-  });
+router.get('/veiculo/:id/:limit?/:order?', function(req, res, next) {
+  Localizacao
+    .find({ 'veiculoId': req.params.id } , function (err, post) {
+      if (err) return res.json(err);
+      if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
+      if(post.length > 1) {
+        res.json(post);
+      } else {
+        res.json(post[0]);
+      }
+    })
+    .limit(req.params.limit || 100)
+    .sort(req.params.order === 'ASC' ? {} : { _id: -1 });
 });
 
 /* PUT /localizacao/:id */
-router.put('/:id', function(req, res, next) {
+router.put('/:id?', function(req, res, next) {
   Localizacao.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
-    if (err) return next(err);
+    if (err) return res.json(err);
+    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json(post);
   });
 });
 
 /* DELETE /localizacao/:id */
-router.delete('/:id', function(req, res, next) {
+router.delete('/:id?', function(req, res, next) {
   Localizacao.findByIdAndRemove(req.params.id, req.body, function (err, post) {
-    if (err) return next(err);
+    if (err) return res.json(err);
+    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json(post);
   });
 });
