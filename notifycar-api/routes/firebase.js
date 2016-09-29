@@ -21,11 +21,11 @@ router.post('/', function(req, res, next) {
   });
 });
 
-/* GET /firebase/:deviceId */
-router.get('/:deviceId?', function(req, res, next) {
-  Firebase.find({ deviceId: req.params.deviceId }, function (err, post) {
+/* GET /firebase/:emailUsuario */
+router.get('/:emailUsuario?', function(req, res, next) {
+  Firebase.find({ emailUsuario: req.params.emailUsuario }, function (err, post) {
     if (err) return res.json(err);
-    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
+    if (post === null || post.length == 0) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json((post.length > 1) ? post : post[0]);
   });
 });
