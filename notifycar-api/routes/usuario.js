@@ -6,6 +6,8 @@ var mongoose = require('mongoose');
 var Dispositivo = require('../models/Dispositivo.js');
 var Veiculo = require('../models/Veiculo.js');
 var Usuario = require('../models/Usuario.js');
+var Modelo = require('../models/Modelo.js');
+var Fabricante = require('../models/Fabricante.js');
 
 Promise.promisifyAll(mongoose);
 
@@ -25,19 +27,39 @@ router.get('/all/:emailUsuario', function(req, res, next) {
   };
 
   var getVehicle = function(idUsuario) {
-    console.log('===>', idUsuario);
     return Promise.props({
       veiculo: Veiculo.find({ usuarioId: idUsuario }).execAsync()
     })
     .then(function(r) {
       allData = _.assign(allData, { veiculo: r.veiculo[0] });
-      return r.veiculo[0]._id;
+      return { veiculoId: r.veiculo[0]._id, modeloId: r.veiculo[0].modeloId };
     });
   };
 
-  var getDevice = function(idVeiculo) {
+
+  var getModel = function(obj) {
     return Promise.props({
-      dispositivo: Dispositivo.find({ veiculoId: idVeiculo }).execAsync()
+      modelo: Modelo.find({ _id: obj.modeloId }).execAsync()
+    })
+    .then(function(r) {
+      allData = _.assign(allData, { modelo: r.modelo[0] });
+      return _.assign(obj, { fabricanteId: r.modelo[0].fabricanteId });
+    });
+  };
+
+  var getVendor = function(obj) {
+    return Promise.props({
+      fabricante: Fabricante.find({ _id: obj.fabricanteId }).execAsync()
+    })
+    .then(function(r) {
+      allData = _.assign(allData, { fabricante: r.fabricante[0] });
+      return obj;
+    });
+  };
+
+  var getDevice = function(obj) {
+    return Promise.props({
+      dispositivo: Dispositivo.find({ veiculoId: obj.veiculoId }).execAsync()
     })
     .then(function(r) {
       allData = _.assign(allData, { dispositivo: r.dispositivo[0] });
@@ -51,6 +73,8 @@ router.get('/all/:emailUsuario', function(req, res, next) {
 
   getUser()
     .then(getVehicle)
+    .then(getModel)
+    .then(getVendor)
     .then(getDevice)
     .then(jsonResp)
     .catch(jsonResp);
