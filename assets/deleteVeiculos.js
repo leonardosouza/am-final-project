@@ -10,7 +10,8 @@ requestify.get(apiPath +'/modelo').then(function (resp) {
 
   console.log(ids);
   
-  for(var x = 0; x < ids.length; x++){  
+  for(var x = 0; x < ids.length; x++){
+    console.log(x, ids[x]);
     requestify.delete(apiPath +'/modelo/' + ids[x]).then(function(response){});
   }
 });

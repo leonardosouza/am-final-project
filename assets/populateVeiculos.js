@@ -4,10 +4,15 @@ var requestify = require('requestify');
 var fs         = require('fs');
 var json = JSON.parse(fs.readFileSync('moreFiles/veiculos.txt','utf-8'));
 
+var fabricantes = null;
+
 requestify.get(apiPath + '/fabricante').then(function (response) {
   for(var i = 0; i < json.length; i++){
     for(var x = 0; x < response.getBody().length; x++){
       if(json[i].marca == response.getBody()[x].nome){
+        
+        console.log('===>', i, json[i].modelo);
+
         requestify.request(apiPath + '/modelo',{
           method:'POST',
           body:{
@@ -20,7 +25,7 @@ requestify.get(apiPath + '/fabricante').then(function (response) {
           },
           dataType:'json'
         }).then(function(resp){
-          resp.getBody();
+          console.log('===>', resp.getBody());
         });
       }
     }
