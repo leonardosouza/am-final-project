@@ -31,8 +31,8 @@ router.get('/:emailUsuario?', function(req, res, next) {
 });
 
 /* PUT /firebase/:id */
-router.put('/:id?', function(req, res, next) {
-  Firebase.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
+router.put('/:emailUsuario?', function(req, res, next) {
+  Firebase.findOneAndUpdate({ emailUsuario: req.params.emailUsuario }, req.body, function (err, post) {
     if (err) return res.json(err);
     if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json(post);
@@ -40,8 +40,8 @@ router.put('/:id?', function(req, res, next) {
 });
 
 /* DELETE /firebase/:id */
-router.delete('/:id?', function(req, res, next) {
-  Firebase.findByIdAndRemove(req.params.id, req.body, function (err, post) {
+router.delete('/:emailUsuario?', function(req, res, next) {
+  Firebase.findOneAndRemove({ emailUsuario: req.params.emailUsuario }, req.body, function (err, post) {
     if (err) return res.json(err);
     if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
     res.json(post);
