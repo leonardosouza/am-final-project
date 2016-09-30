@@ -1,0 +1,13 @@
+[{"marca":"HONDA","pais":"Japão"},
+{"marca":"CHEVROLET","pais":"EUA"},
+{"marca":"FORD","pais":"EUA"},
+{"marca":"BMW","pais":"Alemanha"},
+{"marca":"CITROEN","pais":"França"},
+{"marca":"HYUNDAI","pais":"Coreia do Sul"},
+{"marca":"NISSAN","pais":"Japão"},
+{"marca":"KIA","pais":"Coreia do Sul"},
+{"marca":"FIAT","pais":"Itália"},
+{"marca":"AUDI","pais":"Alemanha"},
+{"marca":"PEUGEOT","pais":"França"},
+{"marca":"MERCEDES-BENZ","pais":"Alemanha"},
+{"marca":"MITSUBISHI","pais":"Coreia do Sul"}]
