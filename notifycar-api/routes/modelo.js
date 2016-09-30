@@ -12,6 +12,24 @@ router.get('/', function(req, res, next) {
   });
 });
 
+/* GET /modelo/:id */
+router.get('/:id?', function(req, res, next) {
+  Modelo.findById(req.params.id, function (err, post) {
+    if (err) return res.json(err);
+    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
+    res.json(post);
+  });
+});
+
+/* GET /modelo/:idFabricante */
+router.get('/fabricante/:idFabricante?', function(req, res, next) {
+  Modelo.find({ fabricanteId: req.params.idFabricante }, function (err, post) {
+    if (err) return res.json(err);
+    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
+    res.json(post);
+  });
+});
+
 /* POST /modelo */
 router.post('/', function(req, res, next) {
   Modelo.create(req.body, function (err, post) {
@@ -21,14 +39,7 @@ router.post('/', function(req, res, next) {
   });
 });
 
-/* GET /modelo/:id */
-router.get('/:id', function(req, res, next) {
-  Modelo.findById(req.params.id, function (err, post) {
-    if (err) return res.json(err);
-    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
-    res.json(post);
-  });
-});
+
 
 /* PUT /modelo/:id */
 router.put('/:id?', function(req, res, next) {
