@@ -4,14 +4,22 @@ var requestify = require('requestify');
 var ids = [];
 
 requestify.get(apiPath +'/modelo').then(function (resp) {
-  for(var i = 0; i < resp.getBody().length; i++){
-    ids[i] =resp.getBody()[i]._id;
-  }
-
-  console.log(ids);
   
-  for(var x = 0; x < ids.length; x++){
-    console.log(x, ids[x]);
-    requestify.delete(apiPath +'/modelo/' + ids[x]).then(function(response){});
-  }
+  resp.getBody().forEach(function(modelo) {
+    ids.push(modelo._id);
+  });
+
+  var totalModelos = ids.length;
+
+  var processDelete = setInterval(function() {
+    if(totalModelos < 0) {
+      clearInterval(processDelete);
+      console.log('DONE!');
+      return;
+    } else {
+      requestify.delete(apiPath +'/modelo/' + ids[totalModelos--]).then(function(response){
+        console.log('===> DELETED', response.getBody());
+      });  
+    }
+  }, 100);
 });
