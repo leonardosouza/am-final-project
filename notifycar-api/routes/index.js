@@ -1,4 +1,5 @@
 var express = require('express');
+var error = require('../config/error.js');
 var router = express.Router();
 
 /* GET home page. */
