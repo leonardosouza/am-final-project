@@ -10,6 +10,7 @@ var openConnection = function() {
     var discoveredPort = [];
     
     ports.forEach(function(port) {
+      console.log(port);
       discoveredPort = port.comName.match(/.+(cu.usbmodem).+/);
     });
 
