@@ -40,10 +40,7 @@ var getSerialData = function(callback, data) {
 };
 
 var openSerial = function(serialData) {
-  console.log('=====>>>>>', serialData);
-
   var processData = function(rawData) {
-    // deviceId = parseRawData(rawData).deviceId;
     deviceId = serialData.deviceId;
   };
 

@@ -11,7 +11,6 @@ var openConnection = function() {
         discoveredDevice;
     
     ports.forEach(function(port) {
-      // console.log(port);
       discoveredPort = port.comName.match(/.+(cu.usbmodem).+/);
       discoveredDevice = [ port.locationId, port.vendorId, port.productId ].join('');
     });
@@ -30,9 +29,5 @@ var openConnection = function() {
 
   return deferred.promise;
 };
-
-// var sendData = function(command) {
-//   port.write(command, genericError);
-// };
 
 module.exports = openConnection;
