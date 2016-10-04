@@ -60,7 +60,7 @@ void getSequentialLatLong() {
   } else {
     jsonBuffer = StaticJsonBuffer<400>();
     JsonObject& root = jsonBuffer.createObject();
-    root["deviceId"] = "494101363422774";
+    root["deviceId"] = "0x14100000-0x2341-0x8036";
     root["sensorPir"] = stateSensor;
     root["carBlocked"] = false;
     root["triggeredAlarm"] = false;
