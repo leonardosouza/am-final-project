@@ -39,15 +39,20 @@ var getSerialData = function(callback, data) {
   }
 };
 
-var openSerial = function(port) {
+var openSerial = function(serialData) {
+  console.log('=====>>>>>', serialData);
+
   var processData = function(rawData) {
-    deviceId = parseRawData(rawData).deviceId;
+    // deviceId = parseRawData(rawData).deviceId;
+    deviceId = serialData.deviceId;
   };
 
   var processMonitor = function(rawData) {
-    console.log(rawData);
     parsedData = parseRawData(rawData);
-    
+    if(Object.keys(parsedData).length) {
+      console.log(JSON.stringify(parsedData));
+    }
+
     if(parsedData && parsedData.deviceId) {
       discoverVehicleId(parsedData);
     }
@@ -60,17 +65,20 @@ var openSerial = function(port) {
 
   var parseRawData = function(rawData) {
     try {
-      return JSON.parse(rawData);
+      var parsed = JSON.parse(rawData);
+      if(parsed && parsed.latlong && parsed.latlong.length === 2) {
+        return parsed;
+      }
     } catch(e) {}
     return {};
   };
 
-  port
+  serialData.port
     .on('error', genericError)
     .on('data', processMonitor)
     .on('data', getSerialData.bind(this, processData));
 
-  serialPort = port;
+  serialPort = serialData.port;
 };
 
 
@@ -115,17 +123,19 @@ var discoverVehicleId = function(dataFromDevice) {
 };
 
 var logOcurrence = function(vehicleId, deviceData) {
-  requestify
-    .post(apiPath + '/localizacao', {
-      latitude: deviceData.latlong[0],
-      longitude: deviceData.latlong[1],
-      bloqueado: deviceData.carBlocked,
-      alarmeDisparado: deviceData.triggeredAlarm,
-      veiculoId: vehicleId
-    })
-    .then(function(response) {
-      console.log(response.getBody());
-    });
+  if(deviceData && deviceData.latlong && deviceData.latlong.length === 2) {
+    requestify
+      .post(apiPath + '/localizacao', {
+        latitude: deviceData.latlong[0],
+        longitude: deviceData.latlong[1],
+        bloqueado: deviceData.carBlocked,
+        alarmeDisparado: deviceData.triggeredAlarm,
+        veiculoId: vehicleId
+      })
+      .then(function(response) {
+        console.log(response.getBody());
+      });
+  }
 };
 
 var sendSmsMessage = function(device, deviceData) {
