@@ -1,4 +1,5 @@
 var express = require('express');
+var error = require('../config/error.js');
 var router = express.Router();
 var mongoose = require('mongoose');
 var Notificacao = require('../models/Notificacao.js');
@@ -6,8 +7,8 @@ var Notificacao = require('../models/Notificacao.js');
 /* GET /notificacao */
 router.get('/', function(req, res, next) {
   Notificacao.find(function (err, post) {
-    if (err) return res.json(err);
-    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
+    if (err) return res.status(400).json(err);
+    if (post === null) res.status(404).json(error.notFound);
     res.json(post);
   });
 });
@@ -15,8 +16,8 @@ router.get('/', function(req, res, next) {
 /* GET /notificacao/:id */
 router.get('/:id', function(req, res, next) {
   Notificacao.findById(req.params.id, function (err, post) {
-    if (err) return res.json(err);
-    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
+    if (err) return res.status(400).json(err);
+    if (post === null) res.status(404).json(error.notFound);
     res.json(post);
   });
 });
@@ -24,17 +25,17 @@ router.get('/:id', function(req, res, next) {
 /* POST /notificacao */
 router.post('/', function(req, res, next) {
   Notificacao.create(req.body, function (err, post) {
-    if (err) return res.json(err);
-    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
-    res.json(post);
+    if (err) return res.status(400).json(err);
+    if (post === null) res.status(404).json(error.notFound);
+    res.status(201).json(post);
   });
 });
 
 /* PUT /notificacao/:id */
 router.put('/:id?', function(req, res, next) {
   Notificacao.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
-    if (err) return res.json(err);
-    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
+    if (err) return res.status(400).json(err);
+    if (post === null) res.status(404).json(error.notFound);
     res.json(post);
   });
 });
@@ -42,8 +43,8 @@ router.put('/:id?', function(req, res, next) {
 /* DELETE /notificacao/:id */
 router.delete('/:id?', function(req, res, next) {
   Notificacao.findByIdAndRemove(req.params.id, req.body, function (err, post) {
-    if (err) return res.json(err);
-    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
+    if (err) return res.status(400).json(err);
+    if (post === null) res.status(404).json(error.notFound);
     res.json(post);
   });
 });

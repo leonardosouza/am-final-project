@@ -1,4 +1,5 @@
 var express = require('express');
+var error = require('../config/error.js');
 var router = express.Router();
 var mongoose = require('mongoose');
 var Modelo = require('../models/Modelo.js');
@@ -6,8 +7,8 @@ var Modelo = require('../models/Modelo.js');
 /* GET /modelo */
 router.get('/', function(req, res, next) {
   Modelo.find(function (err, post) {
-    if (err) return res.json(err);
-    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
+    if (err) return res.status(400).json(err);
+    if (post === null) res.status(404).json(error.notFound);
     res.json(post);
   });
 });
@@ -15,8 +16,8 @@ router.get('/', function(req, res, next) {
 /* GET /modelo/:id */
 router.get('/:id?', function(req, res, next) {
   Modelo.findById(req.params.id, function (err, post) {
-    if (err) return res.json(err);
-    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
+    if (err) return res.status(400).json(err);
+    if (post === null) res.status(404).json(error.notFound);
     res.json(post);
   });
 });
@@ -24,8 +25,8 @@ router.get('/:id?', function(req, res, next) {
 /* GET /modelo/:idFabricante */
 router.get('/fabricante/:idFabricante?', function(req, res, next) {
   Modelo.find({ fabricanteId: req.params.idFabricante }, function (err, post) {
-    if (err) return res.json(err);
-    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
+    if (err) return res.status(400).json(err);
+    if (post === null) res.status(404).json(error.notFound);
     res.json(post);
   });
 });
@@ -33,9 +34,9 @@ router.get('/fabricante/:idFabricante?', function(req, res, next) {
 /* POST /modelo */
 router.post('/', function(req, res, next) {
   Modelo.create(req.body, function (err, post) {
-    if (err) return res.json(err);
-    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
-    res.json(post);
+    if (err) return res.status(400).json(err);
+    if (post === null) res.status(404).json(error.notFound);
+    res.status(201).json(post);
   });
 });
 
@@ -44,8 +45,8 @@ router.post('/', function(req, res, next) {
 /* PUT /modelo/:id */
 router.put('/:id?', function(req, res, next) {
   Modelo.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
-    if (err) return res.json(err);
-    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
+    if (err) return res.status(400).json(err);
+    if (post === null) res.status(404).json(error.notFound);
     res.json(post);
   });
 });
@@ -53,8 +54,8 @@ router.put('/:id?', function(req, res, next) {
 /* DELETE /modelo/:id */
 router.delete('/:id?', function(req, res, next) {
   Modelo.findByIdAndRemove(req.params.id, req.body, function (err, post) {
-    if (err) return res.json(err);
-    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
+    if (err) return res.status(400).json(err);
+    if (post === null) res.status(404).json(error.notFound);
     res.json(post);
   });
 });

@@ -7,10 +7,13 @@ var openConnection = function() {
   var deferred = new Deferred();
 
   SerialPort.list(function (err, ports) {
-    var discoveredPort = [];
+    var discoveredPort = [],
+        discoveredDevice;
     
     ports.forEach(function(port) {
+      // console.log(port);
       discoveredPort = port.comName.match(/.+(cu.usbmodem).+/);
+      discoveredDevice = [ port.locationId, port.vendorId, port.productId ].join('');
     });
 
     if(discoveredPort) {
@@ -19,7 +22,7 @@ var openConnection = function() {
         baudRate: 57600,
         parser: SerialPort.parsers.readline('\n')
       });
-      deferred.resolve(port);
+      deferred.resolve({ port: port, deviceId: discoveredDevice });
     } else {
       deferred.reject('FAILED OPENING SERIAL CONNECTION');
     }

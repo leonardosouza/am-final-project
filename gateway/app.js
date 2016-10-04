@@ -11,7 +11,9 @@ var server = webserver.server;
 var apiPath = process.env.API_PATH;
 var serialPort;
 var deviceId;
+var vehicleId;
 var tunnelName;
+var parsedData;
 var smsSender = require('./sms-sender');
 var smsSended = false;
 var findData = false;
@@ -37,33 +39,46 @@ var getSerialData = function(callback, data) {
   }
 };
 
-var openSerial = function(port) {
+var openSerial = function(serialData) {
+  console.log('=====>>>>>', serialData);
+
   var processData = function(rawData) {
-    deviceId = parseRawData(rawData).deviceId;
+    // deviceId = parseRawData(rawData).deviceId;
+    deviceId = serialData.deviceId;
   };
 
   var processMonitor = function(rawData) {
-    console.log(rawData);
-    var parsedData = parseRawData(rawData);
-    if(parsedData && parsedData.carBlocked && parsedData.triggeredAlarm) {
-      discoverAndLog(parsedData.deviceId, parsedData);
+    parsedData = parseRawData(rawData);
+    if(Object.keys(parsedData).length) {
+      console.log(JSON.stringify(parsedData));
+    }
+
+    if(parsedData && parsedData.deviceId) {
+      discoverVehicleId(parsedData);
+    }
+
+    if(parsedData && parsedData.carBlocked && parsedData.triggeredAlarm && vehicleId) {
+      logOcurrence(vehicleId, parsedData);
       sendSmsMessage(parsedData.deviceId, parsedData);
     }
   };
 
   var parseRawData = function(rawData) {
     try {
-      return JSON.parse(rawData);
+      var parsed = JSON.parse(rawData);
+      if(parsed && parsed.latlong && parsed.latlong.length === 2) {
+        return parsed;
+      }
     } catch(e) {}
     return {};
   };
 
-  port
+  serialData.port
     .on('error', genericError)
     .on('data', processMonitor)
     .on('data', getSerialData.bind(this, processData));
 
-  serialPort = port;
+  serialPort = serialData.port;
 };
 
 
@@ -89,26 +104,38 @@ var openTunnel = function(url) {
   }, 1000);
 };
 
-var discoverAndLog = function(device, deviceData) {
-  requestify
-    .get(apiPath + '/dispositivo/' + device)
-    .then(function(response) {
-      logCurrentLocation(_.head(response.getBody()), deviceData);
-    });
+var discoverVehicleId = function(dataFromDevice) {
+  if(!vehicleId) {
+    requestify
+      .get(apiPath + '/dispositivo/' + dataFromDevice.deviceId)
+      .then(function(response) {
+        if(response && response.getBody().length > 0) {
+          vehicleId = _.head(response.getBody()).veiculoId;
+        }
+      });
+
+    setInterval(function() {
+      if(vehicleId) {
+        logOcurrence(vehicleId, parsedData);
+      } 
+    }, 5000);
+  }
 };
 
-var logCurrentLocation = function(vehicleData, deviceData) {
-  requestify
-    .post(apiPath + '/localizacao', {
-      latitude: deviceData.latlong[0],
-      longitude: deviceData.latlong[1],
-      bloqueado: deviceData.carBlocked,
-      alarmeDisparado: deviceData.triggeredAlarm,
-      veiculoId: vehicleData.veiculoId
-    })
-    .then(function(response) {
-      console.log(response.getBody());
-    });
+var logOcurrence = function(vehicleId, deviceData) {
+  if(deviceData && deviceData.latlong && deviceData.latlong.length === 2) {
+    requestify
+      .post(apiPath + '/localizacao', {
+        latitude: deviceData.latlong[0],
+        longitude: deviceData.latlong[1],
+        bloqueado: deviceData.carBlocked,
+        alarmeDisparado: deviceData.triggeredAlarm,
+        veiculoId: vehicleId
+      })
+      .then(function(response) {
+        console.log(response.getBody());
+      });
+  }
 };
 
 var sendSmsMessage = function(device, deviceData) {

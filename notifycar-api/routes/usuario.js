@@ -1,5 +1,6 @@
 var Promise = require('bluebird');
 var _ = require('lodash');
+var error = require('../config/error.js');
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
@@ -67,8 +68,12 @@ router.get('/all/:emailUsuario', function(req, res, next) {
     });
   };
 
-  var jsonResp = function(v) {
+  var jsonSuccess = function(v) {
     return res.json(v);
+  }
+
+  var jsonError = function(v) {
+    return res.status(404).json(error.notFound);
   }
 
   getUser()
@@ -76,16 +81,16 @@ router.get('/all/:emailUsuario', function(req, res, next) {
     .then(getModel)
     .then(getVendor)
     .then(getDevice)
-    .then(jsonResp)
-    .catch(jsonResp);
+    .then(jsonSuccess)
+    .catch(jsonError);
 });
 
 
 /* GET /usuario */
 router.get('/', function(req, res, next) {
   Usuario.find(function (err, post) {
-    if (err) return res.json(err);
-    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
+    if (err) return res.status(400).json(err);
+    if (post === null) return res.status(404).json(error.notFound);
     res.json(post);
   });
 });
@@ -93,17 +98,17 @@ router.get('/', function(req, res, next) {
 /* POST /usuario */
 router.post('/', function(req, res, next) {
   Usuario.create(req.body, function (err, post) {
-    if (err) return res.json(err);
-    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
-    res.json(post);
+    if (err) return res.status(400).json(err);
+    if (post === null) return res.status(404).json(error.notFound);
+    res.status(201).json(post);
   });
 });
 
 /* GET /usuario/:id */
 router.get('/:id', function(req, res, next) {
   Usuario.findById(req.params.id, function (err, post) {
-    if (err) return res.json(err);
-    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
+    if (err) return res.status(400).json(err);
+    if (post === null) return res.status(404).json(error.notFound);
     res.json(post);
   });
 });
@@ -111,8 +116,8 @@ router.get('/:id', function(req, res, next) {
 /* PUT /usuario/:id */
 router.put('/:id?', function(req, res, next) {
   Usuario.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
-    if (err) return res.json(err);
-    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
+    if (err) return res.status(400).json(err);
+    if (post === null) return res.status(404).json(error.notFound);
     res.json(post);
   });
 });
@@ -120,8 +125,8 @@ router.put('/:id?', function(req, res, next) {
 /* DELETE /usuario/:id */
 router.delete('/:id?', function(req, res, next) {
   Usuario.findByIdAndRemove(req.params.id, req.body, function (err, post) {
-    if (err) return res.json(err);
-    if (post === null) return res.json({ message: 'Object not found', name: 'NullError' });
+    if (err) return res.status(400).json(err);
+    if (post === null) return res.status(404).json(error.notFound);
     res.json(post);
   });
 });
