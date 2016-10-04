@@ -11,7 +11,7 @@ router.post('/', function(req, res, next) {
     Usuario.find( { email: req.body.email, senha: req.body.senha }, 'nome email' , function (err, post) {
       if (err) return res.status(400).json(err);
       if(post.length > 0) {
-        res.status(202).json(_.assign({}, { auth: true }, post[0]._doc ));
+        res.status(200).json(_.assign({}, { auth: true }, post[0]._doc ));
       } else {
         res.status(404).json({ auth: false });
       }
