@@ -220,6 +220,7 @@ app.post('/reset', function(req, res) {
   smsSended = false;
   findDataSms = false;
   pushSended = false;
+  findDataPush = false;
   sendSerialData('R');
   res.json({ deviceId: deviceId, carBlocked: false, carStatus: 'reset' });
 });
