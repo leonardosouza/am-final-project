@@ -15,8 +15,11 @@ var vehicleId;
 var tunnelName;
 var parsedData;
 var smsSender = require('./sms-sender');
+var pushSender = require('./push-notification');
 var smsSended = false;
-var findData = false;
+var pushSended = false;
+var findDataSms = false;
+var findDataPush = false;
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -56,7 +59,8 @@ var openSerial = function(serialData) {
 
     if(parsedData && parsedData.carBlocked && parsedData.triggeredAlarm && vehicleId) {
       logOcurrence(vehicleId, parsedData);
-      sendSmsMessage(parsedData.deviceId, parsedData);
+      sendSmsMessage(parsedData.deviceId);
+      sendPushNotification(parsedData.deviceId);
     }
   };
 
@@ -135,12 +139,12 @@ var logOcurrence = function(vehicleId, deviceData) {
   }
 };
 
-var sendSmsMessage = function(device, deviceData) {
-  if(!(smsSended && findData)) {
-    findData = true;
+var sendSmsMessage = function(deviceId) {
+  if(!(smsSended && findDataSms)) {
+    findDataSms = true;
 
     requestify
-      .get(apiPath + '/dispositivo/all/' + device)
+      .get(apiPath + '/dispositivo/all/' + deviceId)
       .then(function(response) {
         var allData = response.getBody();
         var strMsg = 'Atenção Sr(a) %nome%! Detectamos que uma atividade suspeita está ocorrendo neste exato momento com o seu veículo de placas %placa%.';
@@ -154,6 +158,46 @@ var sendSmsMessage = function(device, deviceData) {
     console.log('SMS NOT SENT!');
   }
 };
+
+
+var sendPushNotification = function(deviceId) {
+  if(!(pushSended && findDataPush)) {
+    findDataPush = true;
+
+    requestify
+      .get(apiPath + '/dispositivo/all/' + deviceId)
+      .then(function(res) {
+        var allData = res.getBody();
+        var strEmail = allData.usuario.email;
+        var strTitle = 'Alerta de Atividade Suspeita!';
+        var strMsg = 'Atenção Sr(a) %nome%! Detectamos que uma atividade suspeita está ocorrendo neste exato momento com o seu veículo de placas %placa%.';
+        var strRpl = ['$1', allData.usuario.nome, '$3', allData.veiculo.placa].join('');
+        strMsg = strMsg.replace(/(.+)(%nome%)(.+)(%placa%)/gmi, strRpl);
+
+        requestify
+          .get(apiPath + '/firebase/' + strEmail)
+          .then(function(res) {
+            var fcmId = res.getBody().fcmId;
+            var message = {
+              to: fcmId, 
+              collapse_key: 'carro',
+              notification: { title: strTitle, body: strMsg }
+            };
+
+            pushSended = pushSender(message);
+            console.log('PUSH NOTIFICATION SUCCESSFULY!');
+          })
+          .fail(function(res) {
+            console.log('ERROR ON GET FIREBASE FCMID!');
+          });
+      })
+      .fail(function(res) {
+        console.log('ERROR ON GET DEVICE!');
+      });
+  } else {
+    console.log('PUSH NOTIFICATION NOT SENT!');
+  }
+}
 
 tunnel().then(openTunnel, genericError.bind(this, new Error('FAIL ON OPEN TUNNEL')));
 
@@ -174,7 +218,8 @@ app.post('/unlock', function(req, res) {
 
 app.post('/reset', function(req, res) {
   smsSended = false;
-  findData = false;
+  findDataSms = false;
+  pushSended = false;
   sendSerialData('R');
   res.json({ deviceId: deviceId, carBlocked: false, carStatus: 'reset' });
 });
