@@ -15,6 +15,7 @@ var veiculo = require('./routes/veiculo');
 var gateway = require('./routes/gateway');
 var firebase = require('./routes/firebase');
 var notificacao = require('./routes/notificacao');
+var twilio = require('./routes/twilio');
 var login = require('./routes/login');
 var mongoDbConnStr = require('./config/mongodb');
 var mongoose = require('mongoose');
@@ -51,6 +52,7 @@ app.use('/gateway', gateway);
 app.use('/login', login);
 app.use('/firebase', firebase);
 app.use('/notificacoes', notificacao);
+app.use('/twilio', twilio);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
