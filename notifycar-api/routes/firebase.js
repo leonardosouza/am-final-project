@@ -36,7 +36,11 @@ router.put('/:emailUsuario?', function(req, res, next) {
   Firebase.findOneAndUpdate({ emailUsuario: req.params.emailUsuario }, req.body, function (err, post) {
     if (err) return res.status(400).json(err);
     if (post === null) res.status(404).json(error.notFound);
-    res.json(post);
+    try {
+      res.json(post);
+    } catch(e) {
+      console.log('Error ==>', e);
+    }
   });
 });
 

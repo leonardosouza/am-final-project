@@ -5,13 +5,13 @@ var mongoose = require('mongoose');
 var Localizacao = require('../models/Localizacao.js');
 
 /* GET /localizacao */
-router.get('/', function(req, res, next) {
-  Localizacao.find(function (err, post) {
-    if (err) return res.status(400).json(err);
-    if (post === null) res.status(404).json(error.notFound);
-    res.json(post);
-  });
-});
+// router.get('/', function(req, res, next) {
+//   Localizacao.find(function (err, post) {
+//     if (err) return res.status(400).json(err);
+//     if (post === null) res.status(404).json(error.notFound);
+//     res.json(post);
+//   });
+// });
 
 /* POST /localizacao */
 router.post('/', function(req, res, next) {
