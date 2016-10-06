@@ -12,9 +12,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^3.4.6",
     "dotenv": "^2.0.0",
     "ejs": "^2.5.2",
     "express": "^4.14.0",
+    "fcm-node": "^1.0.15",
     "jquery": "^3.1.0",
     "localtunnel": "^1.8.1",
     "lodash": "^4.15.0",
