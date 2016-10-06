@@ -5,12 +5,13 @@ var fcm = new firebaseCloudMessaging(fcmServerKey);
 
 var fcmPushNotification = function(message) {
   fcm.send(message, function(err, res){
-    if (err) {
-      return false;
-    } else {
-      return true;
+    if (err) { 
+      console.log(err);
+      return false; 
     }
   });
+  
+  return true;
 };
 
 module.exports = fcmPushNotification;

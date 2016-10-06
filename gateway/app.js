@@ -192,6 +192,7 @@ var dispatchPush = function(allData) {
 };
 
 var sendPUSH = function(deviceId) {
+  console.log('DEBUG PUSH ===>', pushSended, findDataPush);
   if(!(pushSended && findDataPush)) {
     findDataPush = true;
 
@@ -215,6 +216,7 @@ var dispatchSms = function(allData) {
 };
 
 var sendSMS = function(deviceId) {
+  console.log('DEBUG SMS ===>', smsSended, findDataSms);
   if(!(smsSended && findDataSms)) {
     findDataSms = true;
 
