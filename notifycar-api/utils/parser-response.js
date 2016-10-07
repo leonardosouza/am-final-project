@@ -1,23 +1,21 @@
 var parser = {
-  success: function(res, statusCode, post) {
+  success: function(res, statusCode, post, msgError) {
     try {
-      res.status(statusCode).json(post);
+      if (!post) {
+        return res.status(400).json(msgError).end();
+      } 
+      return res.status(statusCode).json(post).end();
     } catch(e) {
-      console.log('PARSE SUCCESS ERROR ==>', e);
+      console.log('PARSE SUCCESS FAILED ==>', e);
     }
   },
-  notFound: function(res, statusCode, post, msgError) {
+  error: function(res, statusCode, err, next) {
     try {
-      if (post === null || post.length == 0) res.status(statusCode).json(msgError);
+      if (err) {
+        return res.status(statusCode).json(err).end();
+      }
     } catch(e) {
-      console.log('PARSE NOT FOUND ERROR ==>', e);
-    }
-  },
-  error: function(res, statusCode, err) {
-    try {
-      if (err) return res.status(statusCode).json(err);
-    } catch(e) {
-      console.log('PARSE ERROR ==>', e);
+      console.log('PARSE ERROR FAILED ==>', e);
     }
   }
 }
