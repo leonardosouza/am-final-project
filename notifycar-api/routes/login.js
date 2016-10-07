@@ -1,5 +1,6 @@
 var _ = require('lodash');
-var error = require('../config/error.js');
+var error = require('../utils/error.js');
+var parser = require('../utils/parser-response.js');
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
@@ -9,11 +10,11 @@ var Usuario = require('../models/Usuario.js');
 router.post('/', function(req, res, next) {
   var user = 
     Usuario.find( { email: req.body.email, senha: req.body.senha }, 'nome email' , function (err, post) {
-      if (err) return res.status(400).json(err);
+      parser.error(res, 400, err);
       if(post.length > 0) {
-        res.status(200).json(_.assign({}, { auth: true }, post[0]._doc ));
+        parser.success(res, 200, _.assign({}, { auth: true }, post[0]._doc ));
       } else {
-        res.status(404).json({ auth: false });
+        parser.error(res, 404, { auth: false });
       }
     })
     .limit(1)

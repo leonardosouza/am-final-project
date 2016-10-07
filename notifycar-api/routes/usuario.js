@@ -1,6 +1,7 @@
 var Promise = require('bluebird');
 var _ = require('lodash');
-var error = require('../config/error.js');
+var error = require('../utils/error.js');
+var parser = require('../utils/parser-response.js');
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
@@ -89,45 +90,45 @@ router.get('/all/:emailUsuario', function(req, res, next) {
 /* GET /usuario */
 router.get('/', function(req, res, next) {
   Usuario.find(function (err, post) {
-    if (err) return res.status(400).json(err);
-    if (post === null) return res.status(404).json(error.notFound);
-    res.json(post);
+    parser.error(res, 400, err);
+    parser.notFound(res, 404, post, error.notFound);
+    parser.success(res, 200, post);
   });
 });
 
 /* POST /usuario */
 router.post('/', function(req, res, next) {
   Usuario.create(req.body, function (err, post) {
-    if (err) return res.status(400).json(err);
-    if (post === null) return res.status(404).json(error.notFound);
-    res.status(201).json(post);
+    parser.error(res, 400, err);
+    parser.notFound(res, 404, post, error.notFound);
+    parser.success(res, 200, post);
   });
 });
 
 /* GET /usuario/:id */
 router.get('/:id', function(req, res, next) {
   Usuario.findById(req.params.id, function (err, post) {
-    if (err) return res.status(400).json(err);
-    if (post === null) return res.status(404).json(error.notFound);
-    res.json(post);
+    parser.error(res, 400, err);
+    parser.notFound(res, 404, post, error.notFound);
+    parser.success(res, 200, post);
   });
 });
 
 /* PUT /usuario/:id */
 router.put('/:id?', function(req, res, next) {
   Usuario.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
-    if (err) return res.status(400).json(err);
-    if (post === null) return res.status(404).json(error.notFound);
-    res.json(post);
+    parser.error(res, 400, err);
+    parser.notFound(res, 404, post, error.notFound);
+    parser.success(res, 200, post);
   });
 });
 
 /* DELETE /usuario/:id */
 router.delete('/:id?', function(req, res, next) {
   Usuario.findByIdAndRemove(req.params.id, req.body, function (err, post) {
-    if (err) return res.status(400).json(err);
-    if (post === null) return res.status(404).json(error.notFound);
-    res.json(post);
+    parser.error(res, 400, err);
+    parser.notFound(res, 404, post, error.notFound);
+    parser.success(res, 200, post);
   });
 });
 

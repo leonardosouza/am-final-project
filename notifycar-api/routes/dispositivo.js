@@ -1,5 +1,6 @@
 var Promise = require('bluebird');
-var error = require('../config/error.js');
+var error = require('../utils/error.js');
+var parser = require('../utils/parser-response.js');
 var _ = require('lodash');
 var express = require('express');
 var router = express.Router();
@@ -60,54 +61,54 @@ router.get('/all/:deviceId', function(req, res, next) {
 /* GET /dispositivo */
 router.get('/', function(req, res, next) {
   Dispositivo.find(function (err, post) {
-    if (err) return res.status(400).json(err);
-    if (post === null) res.status(404).json(error.notFound);
-    res.json(post);
+    parser.error(res, 400, err);
+    parser.notFound(res, 404, post, error.notFound);
+    parser.success(res, 200, post);
   });
 });
 
 /* GET /dispositivo/:deviceId */
 router.get('/:deviceId', function(req, res, next) {
   Dispositivo.find({ 'deviceId': req.params.deviceId }, function (err, post) {
-    if (err) return res.status(400).json(err);
-    if (post === null) res.status(404).json(error.notFound);
-    res.json(post);
+    parser.error(res, 400, err);
+    parser.notFound(res, 404, post, error.notFound);
+    parser.success(res, 200, post);
   });
 });
 
 /* POST /dispositivo */
 router.post('/', function(req, res, next) {
   Dispositivo.create(req.body, function (err, post) {
-    if (err) return res.status(400).json(err);
-    if (post === null) res.status(404).json(error.notFound);
-    res.status(201).json(post);
+    parser.error(res, 400, err);
+    parser.notFound(res, 404, post, error.notFound);
+    parser.success(res, 200, post);
   });
 });
 
 /* GET /dispositivo/:id */
 router.get('/:id', function(req, res, next) {
   Dispositivo.findById(req.params.id, function (err, post) {
-    if (err) return res.status(400).json(err);
-    if (post === null) res.status(404).json(error.notFound);
-    res.json(post);
+    parser.error(res, 400, err);
+    parser.notFound(res, 404, post, error.notFound);
+    parser.success(res, 200, post);
   });
 });
 
 /* PUT /dispositivo/:id */
 router.put('/:id?', function(req, res, next) {
   Dispositivo.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
-    if (err) return res.status(400).json(err);
-    if (post === null) res.status(404).json(error.notFound);
-    res.json(post);
+    parser.error(res, 400, err);
+    parser.notFound(res, 404, post, error.notFound);
+    parser.success(res, 200, post);
   });
 });
 
 /* DELETE /dispositivo/:id */
 router.delete('/:id?', function(req, res, next) {
   Dispositivo.findByIdAndRemove(req.params.id, req.body, function (err, post) {
-    if (err) return res.status(400).json(err);
-    if (post === null) res.status(404).json(error.notFound);
-    res.json(post);
+    parser.error(res, 400, err);
+    parser.notFound(res, 404, post, error.notFound);
+    parser.success(res, 200, post);
   });
 });
 
