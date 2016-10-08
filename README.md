@@ -14,4 +14,4 @@ cd notifycar-api && npm install && npm start
 
 # Documentação da API (Postman)
 
-http://bit.ly/2cXqSBk
+http://bit.ly/2dST441
