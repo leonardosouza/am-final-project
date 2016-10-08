@@ -25,6 +25,9 @@ router.get('/all/:emailUsuario', function(req, res, next) {
     .then(function(r) {
       allData = _.assign(allData, { usuario: r.usuario[0] });
       return r.usuario[0]._id;
+    })
+    .catch(function(r) {
+      return r;
     });
   };
 
@@ -35,6 +38,9 @@ router.get('/all/:emailUsuario', function(req, res, next) {
     .then(function(r) {
       allData = _.assign(allData, { veiculo: r.veiculo[0] });
       return { veiculoId: r.veiculo[0]._id, modeloId: r.veiculo[0].modeloId };
+    })
+    .catch(function(r) {
+      return r;
     });
   };
 
@@ -46,6 +52,9 @@ router.get('/all/:emailUsuario', function(req, res, next) {
     .then(function(r) {
       allData = _.assign(allData, { modelo: r.modelo[0] });
       return _.assign(obj, { fabricanteId: r.modelo[0].fabricanteId });
+    })
+    .catch(function(r) {
+      return r;
     });
   };
 
@@ -56,6 +65,9 @@ router.get('/all/:emailUsuario', function(req, res, next) {
     .then(function(r) {
       allData = _.assign(allData, { fabricante: r.fabricante[0] });
       return obj;
+    })
+    .catch(function(r) {
+      return r;
     });
   };
 
@@ -66,16 +78,19 @@ router.get('/all/:emailUsuario', function(req, res, next) {
     .then(function(r) {
       allData = _.assign(allData, { dispositivo: r.dispositivo[0] });
       return allData;
+    })
+    .catch(function(r) {
+      return r;
     });
   };
 
   var jsonSuccess = function(post) {
     return response.success(res, 200, post, error.notFound);
-  }
+  };
 
-  var jsonError = function(post) {
-    return 
-  }
+  var jsonError = function(err) {
+    return response.error(res, 400, err);
+  };
 
   getUser()
     .then(getVehicle)

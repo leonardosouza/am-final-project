@@ -23,6 +23,9 @@ router.get('/all/:deviceId', function(req, res, next) {
     .then(function(r) {
       allData = _.assign(allData, { dispositivo: r.dispositivo[0] });
       return r.dispositivo[0].veiculoId;
+    })
+    .catch(function(r) {
+      return r;
     });
   };
 
@@ -33,6 +36,9 @@ router.get('/all/:deviceId', function(req, res, next) {
     .then(function(r) {
       allData = _.assign(allData, { veiculo: r.veiculo[0] });
       return r.veiculo[0].usuarioId;
+    })
+    .catch(function(r) {
+      return r;
     });
   };
 
@@ -43,16 +49,19 @@ router.get('/all/:deviceId', function(req, res, next) {
     .then(function(r) {
       allData = _.assign(allData, { usuario: r.usuario[0] });
       return allData;
+    })
+    .catch(function(r) {
+      return r;
     });
   };
 
   var jsonSuccess = function(post) {
     return response.success(res, 200, post, error.notFound);
-  }
+  };
 
-  var jsonError = function(post) {
-    return 
-  }
+  var jsonError = function(err) {
+    return response.error(res, 400, err);
+  };
 
   getDevice()
     .then(getVehicle)
