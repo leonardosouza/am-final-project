@@ -105,7 +105,7 @@ var openTunnel = function(url) {
     } else {
       console.log('GETTING DEVICE ID...');
     }
-  }, 1000);
+  }, 5000);
 };
 
 var discoverVehicleId = function(dataFromDevice) {
@@ -118,11 +118,11 @@ var discoverVehicleId = function(dataFromDevice) {
         }
       });
 
-    setInterval(function() {
+    var controlInterval = setInterval(function() {
       if(vehicleId) {
         logOcurrence(vehicleId, parsedData);
       } 
-    }, 5000);
+    }, 10000);
   }
 };
 
@@ -192,7 +192,7 @@ var dispatchPush = function(allData) {
 };
 
 var sendPUSH = function(deviceId) {
-  console.log('DEBUG PUSH ===>', pushSended, findDataPush);
+  // console.log('DEBUG PUSH ===>', pushSended, findDataPush);
   if(!(pushSended && findDataPush)) {
     findDataPush = true;
 
@@ -216,7 +216,7 @@ var dispatchSms = function(allData) {
 };
 
 var sendSMS = function(deviceId) {
-  console.log('DEBUG SMS ===>', smsSended, findDataSms);
+  // console.log('DEBUG SMS ===>', smsSended, findDataSms);
   if(!(smsSended && findDataSms)) {
     findDataSms = true;
 

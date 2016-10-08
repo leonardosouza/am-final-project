@@ -6,7 +6,10 @@
     "start": "node ./bin/www",
     "pm2-start": "pm2 start ./bin/www -i max --name 'api' --watch --node-args='--debug=7001'",
     "pm2-logs": "pm2 logs api --lines 1000",
-    "pm2-stop": "pm2 kill"
+    "pm2-stop": "pm2 kill",
+    "cf-app": "cf app notifycar-api",
+    "cf-logs": "cf logs notifycar-api",
+    "deploy": "cf push notifycar-api"
   },
   "dependencies": {
     "bluebird": "^3.4.6",

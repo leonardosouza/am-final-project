@@ -1,12 +1,11 @@
 'use strict'
 
+var pkg = require("./package.json")
 
- var pkg = require("./package.json")
+var APP_NAME     = pkg.name || "unnamed-app"
+var ENV_VAR_NAME = "NEWRELIC_LICENSE_KEY"
 
- var APP_NAME     = pkg.name || "unnamed-app"
- var ENV_VAR_NAME = "NEWRELIC_LICENSE_KEY"
-
- var NewRelicLicenseKey = process.env[ENV_VAR_NAME]
+var NewRelicLicenseKey = process.env[ENV_VAR_NAME]
 
 /**
  * New Relic agent configuration.
